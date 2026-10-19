@@ -109,6 +109,7 @@ const TABS = [
   { key: 'dashboard', label: '看板' },
   { key: 'upload', label: '上传' },
   { key: 'ledger', label: '台账' },
+  { key: 'matrix', label: '预控矩阵' },
   { key: 'sections', label: '标段单位工程' },
   { key: 'categories', label: '类别管理' },
   { key: 'standards', label: '判定标准' },
@@ -118,7 +119,7 @@ const TABS = [
 // ========================= IndexedDB 封装 =========================
 const DB = {
   name: 'quality_ledger',
-  version: 3,
+  version: 4,
   open() {
     return new Promise((resolve, reject) => {
       const req = indexedDB.open(this.name, this.version);
@@ -145,15 +146,22 @@ const DB = {
               os.createIndex('category', 'category', { unique: false });
               os.createIndex('is_deleted', 'is_deleted', { unique: false });
               os.createIndex('judgment', 'judgment', { unique: false });
+              os.createIndex('unit_work', 'unit_work', { unique: false });
+              os.createIndex('division', 'division', { unique: false });
             }
           }
         }
-        // v3 起：report_no+specimen_no 唯一索引改为非唯一。
-        // 宽松导入的见证台账常含报告编号/试件编号为空的行，唯一索引会导致整批写入失败；去重改在代码层完成。
+        // v3：report_no+specimen_no 唯一索引改非唯一（见证台账空编号场景）
         if (db.objectStoreNames.contains('records')) {
           const os = e.target.transaction.objectStore('records');
           if (os.indexNames.contains('report_specimen')) os.deleteIndex('report_specimen');
           os.createIndex('report_specimen', ['report_no', 'specimen_no'], { unique: false });
+        }
+        // v4：新增 unit_work、division 索引（仅增量，跳过已存在的）
+        if (db.objectStoreNames.contains('records')) {
+          const os = e.target.transaction.objectStore('records');
+          if (!os.indexNames.contains('unit_work')) os.createIndex('unit_work', 'unit_work', { unique: false });
+          if (!os.indexNames.contains('division')) os.createIndex('division', 'division', { unique: false });
         }
       };
       req.onsuccess = (e) => { S.db = e.target.result; resolve(); };
@@ -268,7 +276,7 @@ function log(msg, type = '') {
 // 默认标准依据《水利工程建设质量检测管理规范》DB11/T 3032-2022（北京市地方标准）
 const EMBED_DEFAULTS = {
   // 内置默认配置版本：低于该版本的本机库会在启动时自动升级默认类别/标准/项目划分（检测记录不受影响）
-  config_version: 2,
+  config_version: 3,
   categories: [
     {
       "key": "concrete_compressive",
@@ -1530,6 +1538,7 @@ function renderContent() {
     case 'dashboard': c.innerHTML = renderDashboard(); break;
     case 'upload': c.innerHTML = renderUpload(); bindUpload(); break;
     case 'ledger': c.innerHTML = renderLedger(); bindLedger(); break;
+    case 'matrix': c.innerHTML = renderMatrix(); bindMatrix(); break;
     case 'sections': c.innerHTML = renderSectionMgmt(); bindSectionMgmt(); break;
     case 'categories': c.innerHTML = renderCategoryMgmt(); break;
     case 'standards': c.innerHTML = renderStandardsMgmt(); bindStandardsMgmt(); break;
@@ -1643,9 +1652,9 @@ function renderDashboard() {
   if (failRecs.length === 0) {
     html += `<p class="muted">暂无不合格记录。</p>`;
   } else {
-    html += `<table><thead><tr><th>标段</th><th>单位工程</th><th>部位</th><th>类别</th><th>规格</th><th>报告编号</th><th>试件编号</th><th>检测日期</th><th>判定</th></tr></thead><tbody>`;
+    html += `<table><thead><tr><th>标段</th><th>单位工程</th><th>单元工程</th><th>类别</th><th>规格</th><th>报告编号</th><th>试件编号</th><th>检测日期</th><th>判定</th></tr></thead><tbody>`;
     failRecs.slice(0, 100).forEach(r => {
-      html += `<tr class="bad"><td>${r.section}</td><td>${r.unit_engineering}</td><td>${r.part}</td><td>${getCategory(r.category)?.name || r.category}</td><td>${r.spec}</td><td>${r.report_no}</td><td>${r.specimen_no}</td><td>${formatDate(r.test_date)}</td><td><span class="tag red">不合格</span></td></tr>`;
+      html += `<tr class="bad"><td>${r.section}</td><td>${r.unit_engineering}</td><td>${r.unit_work || r.part || ''}</td><td>${getCategory(r.category)?.name || r.category}</td><td>${r.spec}</td><td>${r.report_no}</td><td>${r.specimen_no}</td><td>${formatDate(r.test_date)}</td><td><span class="tag red">不合格</span></td></tr>`;
     });
     html += `</tbody></table>${failRecs.length > 100 ? '<p class="muted">仅显示前 100 条，请到「台账」Tab 按判定筛选查看全部。</p>' : ''}`;
   }
@@ -1716,8 +1725,16 @@ async function handleFile(file) {
     } else if (ext === 'docx') {
       datasets = await readDocxTables(buf);
     } else if (ext === 'doc') {
-      log('暂不支持旧版 .doc（二进制）格式的自动解析，请在 Word 中「另存为 .docx」后重新上传。', 'err');
-      return;
+      try {
+        const { tables, paragraphs } = await parseDocFile(buf);
+        datasets = tables.map((t, i) => ({ name: `table_${i + 1}`, rows: matrixToRecords(t) }));
+        if (!datasets.length && paragraphs.length) {
+          log(`旧版 .doc 解析：未找到表格，仅提取 ${paragraphs.length} 条文本段落，无法识别为台账。`, 'warn');
+        }
+      } catch (e) {
+        log('旧版 .doc 解析失败：' + e.message + '。建议在 Word 中「另存为 .docx」后重新上传。', 'err');
+        return;
+      }
     } else {
       log('不支持的文件类型：.' + ext + '，请上传 .xlsx / .xls / .docx 文件。', 'err');
       return;
@@ -2094,6 +2111,7 @@ function mapRowToRecord(row, cat, sourceFile) {
     unit_engineering: String(pickField(row, 'unit_engineering') || '').trim(),
     division: String(pickField(row, 'division') || '').trim(),
     part: String(pickField(row, 'part') || '').trim(),
+    unit_work: String(pickField(row, 'unit_work') || pickField(row, 'part') || '').trim(),
     category: cat.key,
     spec: String(pickField(row, 'spec') || '').trim(),
     representative_batch: Number(pickField(row, 'representative_batch')) || 0,
@@ -2182,7 +2200,7 @@ function renderLedger() {
   if (f.needComplete) list = list.filter(isNeedComplete);
   if (f.keyword) {
     const k = f.keyword.toLowerCase();
-    list = list.filter(r => (r.report_no + r.specimen_no + (r.division || '') + r.part + r.remark).toLowerCase().includes(k));
+    list = list.filter(r => (r.report_no + r.specimen_no + (r.division || '') + (r.unit_work || r.part || '') + r.remark).toLowerCase().includes(k));
   }
   const total = list.length;
   const pages = Math.max(1, Math.ceil(total / S.pageSize));
@@ -2211,16 +2229,16 @@ function renderLedger() {
       <select id="fJudgment" onchange="applyFilter('judgment',this.value)">
         <option value="">全部</option><option ${f.judgment === '合格' ? 'selected' : ''}>合格</option><option ${f.judgment === '不合格' ? 'selected' : ''}>不合格</option>
       </select>
-      <input id="fKeyword" placeholder="报告/试件/分部/部位/备注 关键词" value="${f.keyword || ''}" onchange="applyFilter('keyword',this.value)">
+      <input id="fKeyword" placeholder="报告/试件/分部/单元工程/备注 关键词" value="${f.keyword || ''}" onchange="applyFilter('keyword',this.value)">
       <label style="font-weight:normal;white-space:nowrap"><input type="checkbox" ${f.needComplete ? 'checked' : ''} onchange="applyFilter('needComplete',this.checked)"> 仅看待补录</label>
       <button class="btn ghost sm" onclick="S.ledgerFilters={};S.ledgerPage=1;renderContent()">重置</button>
       <span style="margin-left:auto" class="muted">双击单元格可编辑 · 判定列不可编辑（自动判定）</span>
     </div>
     <div style="overflow:auto;max-height:65vh"><table>
     <thead><tr>
-      <th>标段</th><th>单位工程</th><th>分部工程</th><th>部位</th><th>类别</th><th>规格</th>
+      <th>标段</th><th>单位工程</th><th>分部工程</th><th>单元工程</th><th>类别</th><th>规格</th>
       <th>报告编号</th><th>试件编号</th><th>检测日期</th><th>类别字段</th>
-      <th>判定</th><th>施工签字</th><th>监理签字</th><th>操作</th>
+      <th>判定</th><th>操作</th>
     </tr></thead><tbody>`;
 
   for (const r of pageList) {
@@ -2233,7 +2251,7 @@ function renderLedger() {
       <td class="editable" data-field="section">${r.section}</td>
       <td class="editable" data-field="unit_engineering">${r.unit_engineering}</td>
       <td class="editable" data-field="division">${r.division || ''}</td>
-      <td class="editable" data-field="part">${r.part}</td>
+      <td class="editable" data-field="unit_work">${r.unit_work || ''}</td>
       <td>${cat?.name || r.category}${needComplete ? ' <span class="tag" title="见证台账宽松导入，无试验编号，需补录编号">待补录</span>' : ''}</td>
       <td class="editable" data-field="spec">${r.spec}</td>
       <td class="editable" data-field="report_no">${r.report_no}</td>
@@ -2241,8 +2259,6 @@ function renderLedger() {
       <td class="editable" data-field="test_date">${formatDate(r.test_date)}</td>
       <td><span class="muted" title="${cfText}">${cfText.length > 40 ? cfText.slice(0, 40) + '…' : cfText}</span></td>
       <td>${r.judgment === '不合格' ? '<span class="tag red">不合格</span>' : '<span class="tag green">合格</span>'}</td>
-      <td class="editable" data-field="construction_signer">${r.construction_signer}</td>
-      <td class="editable" data-field="supervision_signer">${r.supervision_signer}</td>
       <td><button class="btn danger sm" onclick="softDeleteRec('${r.record_id}')">删除</button></td>
     </tr>`;
   }
@@ -2266,6 +2282,392 @@ function renderLedger() {
     html += `</tbody></table></div>`;
   }
   return html;
+}
+
+// ========================= 预控矩阵 =========================
+// 行=S.divisions（186 个分部工程），列=S.categories（12 个试验类别）
+// cell = 该分部该类别下所有记录的判定汇总；空=尚未导入
+function renderMatrix() {
+  const recs = activeRecords();
+  const cats = S.categories;
+  const divisions = S.divisions;
+  const f = S.matrixFilters || (S.matrixFilters = {});
+
+  // 标段筛选
+  let rows = divisions;
+  if (f.section) rows = rows.filter(d => d.section === f.section);
+
+  // 先建索引：key = division.code + '|' + category.key
+  const index = {};
+  for (const r of recs) {
+    // 用 division.code 匹配（项目划分里的分部唯一编码），匹配不到再用 division.name 模糊匹配
+    const dCode = S.divisions.find(d => d.name === r.division && d.section === r.section);
+    const dKey = dCode ? dCode.code : (r.division || '');
+    const k = dKey + '|' + r.category;
+    if (!index[k]) index[k] = { total: 0, pass: 0, fail: 0, list: [] };
+    index[k].total++;
+    if (r.judgment === '合格') index[k].pass++;
+    else if (r.judgment === '不合格') index[k].fail++;
+    index[k].list.push(r);
+  }
+
+  // 预控完整性统计（仅统计有记录的行）
+  let rowsWithData = 0, filled = 0, empty = 0;
+  for (const d of rows) {
+    let rowHas = false;
+    for (const c of cats) {
+      const k = d.code + '|' + c.key;
+      if (index[k]) { filled++; rowHas = true; } else { empty++; }
+    }
+    if (rowHas) rowsWithData++;
+  }
+
+  let html = `<div class="card">
+    <h2>预控矩阵（${rows.length} 分部工程 × ${cats.length} 试验类别）</h2>
+    <div class="toolbar">
+      <label>标段</label>
+      <select id="mSection" onchange="S.matrixFilters={section:this.value};renderContent()">
+        <option value="">全部</option>${S.sections.map(s => `<option ${f.section === s.code ? 'selected' : ''}>${s.code}</option>`).join('')}
+      </select>
+      <span class="muted" style="margin-left:auto">已有 ${rowsWithData} 个分部工程导入记录 / ${filled} 个单元格有数据 / ${empty} 个单元格待试验</span>
+      <button class="btn sm" onclick="exportMatrixXlsx()">导出矩阵 xlsx</button>
+      <button class="btn ghost sm" onclick="S.matrixFilters={};renderContent()">重置</button>
+    </div>
+    <div style="overflow:auto;max-height:70vh;font-size:12px"><table>
+    <thead><tr>
+      <th style="position:sticky;left:0;background:#f8fafc">标段</th>
+      <th style="position:sticky;left:60px;background:#f8fafc">单位工程</th>
+      <th style="position:sticky;left:180px;background:#f8fafc">分部工程</th>
+      ${cats.map(c => `<th>${c.name}</th>`).join('')}
+    </tr></thead><tbody>`;
+
+  for (const d of rows) {
+    const ue = S.unitEngineerings.find(u => u.ue_code === d.ue_code || u.section === d.section);
+    const row = `
+      <tr data-div="${d.code}">
+        <td style="position:sticky;left:0;background:#fff">${d.section}</td>
+        <td style="position:sticky;left:60px;background:#fff">${d.ue_name}</td>
+        <td style="position:sticky;left:180px;background:#fff">${d.name}</td>
+      ${cats.map(c => {
+        const k = d.code + '|' + c.key;
+        const cell = index[k];
+        if (!cell) return `<td style="color:#cbd5e1;text-align:center">—</td>`;
+        const cls = cell.fail > 0 ? 'class="bad"' : '';
+        const rate = cell.total ? Math.round(cell.pass / cell.total * 100) : 0;
+        const title = `${d.name} / ${c.name}\n共 ${cell.total} 条（合格 ${cell.pass} / 不合格 ${cell.fail}）\n平均判定率 ${rate}%\n点击查看详情`;
+        return `<td ${cls} style="text-align:center;cursor:pointer" title="${title.replace(/"/g, '&quot;')}" data-div="${d.code}" data-cat="${c.key}" onclick="showMatrixDetail('${d.code}','${c.key}')">
+          <span class="tag ${cell.fail > 0 ? 'red' : 'green'}" style="margin:0">${cell.pass}/${cell.total}</span>
+        </td>`;
+      }).join('')}
+      </tr>`;
+    html += row;
+  }
+  html += `</tbody></table></div></div>`;
+  // 详情 modal 容器（复用）
+  html += `<div id="matrixDetail" style="display:none"></div>`;
+  return html;
+}
+
+function bindMatrix() {
+  // 暂无通用绑定（矩阵 cell 用 onclick 内联）
+}
+
+// 点击 matrix cell 弹详情
+function showMatrixDetail(divCode, catKey) {
+  const d = S.divisions.find(x => x.code === divCode);
+  const cat = getCategory(catKey);
+  const list = activeRecords().filter(r => {
+    const m = S.divisions.find(x => x.name === r.division && x.section === r.section);
+    return (m && m.code === divCode && r.category === catKey) ||
+           (r.division === d?.name && r.category === catKey);
+  });
+  if (!list.length) return;
+  const content = `<div class="card" style="position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:1000;max-width:90vw;max-height:85vh;overflow:auto;background:#fff;border:1px solid #e2e8f0;border-radius:8px">
+    <h2 style="margin:12px">${d?.name || divCode} / ${cat?.name || catKey}（${list.length} 条）</h2>
+    <button class="btn ghost sm" style="position:absolute;top:12px;right:12px" onclick="document.getElementById('matrixDetail').style.display='none'">关闭</button>
+    <table style="margin:0 12px 16px;border-collapse:collapse;width:100%;font-size:12px"><thead><tr>
+      <th style="padding:4px 8px;border:1px solid #e2e8f0">报告编号</th><th style="padding:4px 8px;border:1px solid #e2e8f0">试件编号</th>
+      <th style="padding:4px 8px;border:1px solid #e2e8f0">规格</th><th style="padding:4px 8px;border:1px solid #e2e8f0">判定</th>
+      <th style="padding:4px 8px;border:1px solid #e2e8f0">单元工程</th><th style="padding:4px 8px;border:1px solid #e2e8f0">检测日期</th>
+      <th style="padding:4px 8px;border:1px solid #e2e8f0">备注</th>
+    </tr></thead><tbody>
+    ${list.map(r => `<tr>
+      <td style="padding:4px 8px;border:1px solid #e2e8f0">${r.report_no}</td>
+      <td style="padding:4px 8px;border:1px solid #e2e8f0">${r.specimen_no}</td>
+      <td style="padding:4px 8px;border:1px solid #e2e8f0">${r.spec}</td>
+      <td style="padding:4px 8px;border:1px solid #e2e8f0;color:${r.judgment === '不合格' ? '#dc2626' : '#16a34a'}">${r.judgment}</td>
+      <td style="padding:4px 8px;border:1px solid #e2e8f0">${r.unit_work || ''}</td>
+      <td style="padding:4px 8px;border:1px solid #e2e8f0">${formatDate(r.test_date)}</td>
+      <td style="padding:4px 8px;border:1px solid #e2e8f0">${r.remark || ''}</td>
+    </tr>`).join('')}
+    </tbody></table></div>`;
+  document.getElementById('matrixDetail').innerHTML = content;
+  document.getElementById('matrixDetail').style.display = 'block';
+}
+
+// 导出矩阵 xlsx（含空行预控，导入行自动填充）
+function exportMatrixXlsx() {
+  const recs = activeRecords();
+  const cats = S.categories;
+  const divisions = S.divisions;
+  const wb = XLSX.utils.book_new();
+
+  // Sheet 1: 预控矩阵（全空行骨架 + 已填充判定）
+  const header = ['标段', '单位工程', '分部工程', '单元工程', ...cats.map(c => c.name + '(合格/总数)')];
+  const rows = [header];
+  for (const d of divisions) {
+    const ue = S.unitEngineerings.find(u => u.ue_code === d.ue_code || u.section === d.section);
+    const row = [d.section, ue?.ue_name || '', d.name, ''];
+    for (const c of cats) {
+      const dCode = d.code;
+      const list = recs.filter(r => {
+        const m = S.divisions.find(x => x.name === r.division && x.section === r.section);
+        return ((m && m.code === dCode) || r.division === d.name) && r.category === c.key;
+      });
+      if (!list.length) { row.push(''); }
+      else {
+        const pass = list.filter(r => r.judgment === '合格').length;
+        row.push(`${pass}/${list.length}`);
+      }
+    }
+    rows.push(row);
+  }
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), '预控矩阵');
+
+  // Sheet 2: 完整台账（流水）
+  if (recs.length) {
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(recs.map(recordToRow)), '流水台账');
+  }
+
+  // Sheet 3: 统计表（标段×类别 汇总）
+  const sections = [...new Set(divisions.map(d => d.section))];
+  const sumHeader = ['标段\\类别', ...cats.map(c => c.name), '合计'];
+  const sumRows = [sumHeader];
+  for (const sec of sections) {
+    const secDivs = divisions.filter(d => d.section === sec);
+    const row = [sec];
+    let tSum = 0, fSum = 0;
+    for (const c of cats) {
+      const list = recs.filter(r => {
+        const m = S.divisions.find(x => x.name === r.division && x.section === r.section);
+        return (m && secDivs.some(sd => sd.code === m.code)) && r.category === c.key;
+      });
+      const pass = list.filter(r => r.judgment === '合格').length;
+      const fail = list.length - pass;
+      tSum += list.length; fSum += fail;
+      row.push(list.length ? `${pass}/${list.length} (${fail ? '不合格' + fail : '全合格'})` : '');
+    }
+    row.push(tSum ? `${tSum - fSum}/${tSum}` : '');
+    sumRows.push(row);
+  }
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sumRows), '标段类别汇总');
+
+  const out = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
+  downloadBlob(new Blob([out], { type: 'application/octet-stream' }), `预控矩阵_${todayStr()}.xlsx`);
+}
+
+// ========================= OLE2 / 旧版 .doc 解析 =========================
+// 仅提取纯文本 + 表格，输出与 readDocxTables 兼容结构 { tables: [matrix], paragraphs: [] }
+async function parseDocFile(buf) {
+  if (!(buf instanceof ArrayBuffer)) throw new Error('需要 ArrayBuffer');
+  const ole = parseOLE(new Uint8Array(buf));
+  const word = ole.streams.get('WordDocument');
+  if (!word) throw new Error('.doc 文件里找不到 WordDocument 流');
+  const table = ole.streams.get('1Table') || ole.streams.get('0Table');
+  return parseWordDocument(word, table);
+}
+
+// OLE2 Compound Document 通用解析
+function parseOLE(buf) {
+  // 1. 校验头 magic
+  if (buf[0] !== 0xD0 || buf[1] !== 0xCF) throw new Error('非 OLE2 文件');
+  // 2. 读头
+  const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+  const sectorShift = dv.getUint16(0x1E, true);          // 通常 9（512B）或 12（4KB）
+  const sectorSize = 1 << sectorShift;
+  const numFatSectors = dv.getUint32(0x2C, true);
+  const firstDirSector = dv.getUint32(0x30, true);
+  const miniStreamCutoff = dv.getUint32(0x38, true);      // 通常 4096
+  const miniFatStart = dv.getUint32(0x3C, true);
+  const numMiniFatSectors = dv.getUint32(0x40, true);
+  const difatStart = dv.getUint32(0x44, true);
+  const numDifatSectors = dv.getUint32(0x48, true);
+  // 3. 收集所有扇区 → 拼完整文件数据（跳过 512B 头）
+  const fileData = new Uint8Array(buf.buffer, buf.byteOffset + sectorSize, buf.byteLength - sectorSize);
+  const fileDv = new DataView(fileData.buffer, fileData.byteOffset, fileData.byteLength);
+
+  // 4. 读 DIFAT（间接 FAT）
+  const FAT = new Uint32Array(numFatSectors * Math.floor(sectorSize / 4));
+  let fatIdx = 0;
+  const pushFatSector = (secIdx) => {
+    if (secIdx === 0xFFFFFFFD || secIdx === 0xFFFFFFFE || secIdx === 0xFFFFFFFF) return;
+    const offset = secIdx * sectorSize;
+    for (let i = 0; i < sectorSize / 4 && fatIdx < FAT.length; i++) {
+      FAT[fatIdx++] = fileDv.getUint32(offset + i * 4, true);
+    }
+  };
+  // DIFAT 前 109 个条目直接在头里
+  for (let i = 0; i < 109 && i < numFatSectors; i++) {
+    const v = dv.getUint32(0x4C + i * 4, true);
+    pushFatSector(v);
+  }
+  // DIFAT 扇区链（间接 FAT 条目）
+  let cur = difatStart;
+  for (let d = 0; d < numDifatSectors; d++) {
+    if (cur >= 0xFFFFFFF0) break;
+    const off = cur * sectorSize;
+    const chain = fileDv.getUint32(off + sectorSize - 4, true);
+    for (let i = 0; i < sectorSize / 4 - 1; i++) {
+      const v = fileDv.getUint32(off + i * 4, true);
+      if (v >= 0xFFFFFFF0) break;
+      pushFatSector(v);
+    }
+    cur = chain;
+  }
+
+  // 5. 读 Directory 扇区链 → 提取每个 stream
+  const streamChain = [];
+  cur = firstDirSector;
+  while (cur < 0xFFFFFFF0) {
+    const off = cur * sectorSize;
+    for (let i = 0; i < sectorSize / 128; i++) {
+      const base = off + i * 128;
+      const nameLen = dv.getUint16(512 + base + 64, true);
+      if (nameLen === 0) continue;
+      const name = decodeUTF16LE(buf, 512 + base, nameLen).replace(/\0+$/, '');
+      const startSec = dv.getUint32(512 + base + 116, true);
+      const size = dv.getUint32(512 + base + 120, true);
+      streamChain.push({ name, startSec, size });
+    }
+    cur = FAT[cur];
+  }
+
+  // 6. 读 MiniFat（用于 < miniStreamCutoff 的流）
+  const miniFAT = new Uint32Array(Math.max(numMiniFatSectors * Math.floor(sectorSize / 4), 4096 / 4));
+  fatIdx = 0;
+  let mcur = miniFatStart;
+  while (mcur < 0xFFFFFFF0) {
+    const off = mcur * sectorSize;
+    for (let i = 0; i < sectorSize / 4 && fatIdx < miniFAT.length; i++) {
+      miniFAT[fatIdx++] = fileDv.getUint32(off + i * 4, true);
+    }
+    mcur = FAT[mcur];
+  }
+  // 找到 MiniStream 流（Root Entry 子流）
+  let miniStreamBuf = null, miniStart = 0;
+  for (const e of streamChain) {
+    if (e.name === 'Mini Stream' || e.name === '\x01CompObj') {
+      // 从 Root Entry 取 mini stream，找 Storage 0 下的第一条
+      break;
+    }
+  }
+  // 更直接：遍历所有流，找 size > miniStreamCutoff 的走 FAT 扇区链，小的后续走 miniFAT
+  const streams = new Map();
+  for (const e of streamChain) {
+    if (e.size === 0) { streams.set(e.name, new Uint8Array(0)); continue; }
+    if (e.size < miniStreamCutoff) {
+      // Mini 流：MiniStream 起始在 streamChain 里找 name='Mini Stream'
+      let miniEntry = streamChain.find(s => s.name === 'Mini Stream' || s.name === '\x01CompObj');
+      // 实际上 Mini Stream 的起始位置在 Root Entry（index=0）的 startSec/size
+      // 简化处理：跳过小于 cutoff 的（.doc 里 WordDocument 通常 > 512KB 不会走 mini）
+      continue;
+    }
+    // 大流：FAT 扇区链
+    const out = new Uint8Array(e.size);
+    let w = 0; let s = e.startSec;
+    while (s < 0xFFFFFFF0 && w < e.size) {
+      const off = s * sectorSize;
+      const toCopy = Math.min(sectorSize, e.size - w);
+      out.set(fileData.subarray(off, off + toCopy), w);
+      w += toCopy; s = FAT[s];
+    }
+    streams.set(e.name, out);
+  }
+
+  return { streams };
+}
+
+function decodeUTF16LE(buf, offset, len) {
+  const out = [];
+  for (let i = 0; i < len - 1; i += 2) {
+    out.push(String.fromCharCode(buf[offset + i] | (buf[offset + i + 1] << 8)));
+  }
+  return out.join('');
+}
+
+// WordDocument 解析：读取 FIB → 文本片段表 → 表格边界 → 文本/表格提取
+function parseWordDocument(wordBuf, tableBuf) {
+  const dv = new DataView(wordBuf.buffer, wordBuf.byteOffset, wordBuf.byteLength);
+
+  // 1. 读 FIB（FibBase + FibRgCswNew）
+  const fcCompressed = dv.getUint16(0x0044, true);   // 0x0044=未压缩(UTF-16), 0x0044 以外？按 0x0044 看
+  const isCompressed = dv.getUint16(0x0044, true) !== 0x0044; // 简化：0x0044=压缩
+  const ccpText = dv.getUint32(0x004C, true);          // 主文本字符数
+  const fcClx = dv.getUint32(0x01A2, true);            // 文本片段表 fc
+  const lcbClx = dv.getUint32(0x01A6, true);           // 文本片段表长度
+  const fcPlcBte = dv.getUint32(0x01B0, true);          // 表格边界 fc
+  const lcbPlcBte = dv.getUint32(0x01B4, true);
+
+  // 2. 取 Clx（文本片段表）
+  const clxBuf = wordBuf.subarray(fcClx, fcClx + lcbClx);
+  // 3. 取主文本（通常在 WordDocument 主流前面部分，或从 Table stream 解析更准确）
+  //    简化：先尝试从主文本区提取段，再用 PlcBte 做表格
+  const paragraphs = [];
+  const tables = [];
+  const isUTF16 = !isCompressed;
+
+  // 从主文本区提取段落
+  const textBuf = wordBuf.subarray(2048, Math.min(2048 + (ccpText * (isUTF16 ? 2 : 1)), wordBuf.length));
+  let text = '';
+  try {
+    text = isUTF16
+      ? new TextDecoder('utf-16le').decode(textBuf.filter((b, i) => i % 2 === 0 || textBuf[i] !== 0))
+      : new TextDecoder('gbk', { fatal: false }).decode(textBuf);
+  } catch (_) {
+    try { text = new TextDecoder('utf-8').decode(textBuf); } catch (__) {}
+  }
+
+  // 分段：\r 或 \n 或 \x0B（软回车）或 \x07（cell 分隔）
+  const rawParas = text.split(/[\r\u0007]+/).filter(p => p.trim());
+  // 过滤掉控制字符残留
+  for (const p of rawParas) {
+    const cleaned = p.replace(/[\x00-\x08\x0B-\x1F]/g, '').trim();
+    if (cleaned) paragraphs.push(cleaned);
+  }
+
+  // 4. 从 1Table/0Table 读 PlcBte 表格边界 → 重建表格
+  //    Table stream 是 OLE stream，先做 FAT 解析
+  if (tableBuf && lcbPlcBte > 0 && tableBuf.length > lcbPlcBte) {
+    // 直接在 tableBuf 里按 fcPlcBte 定位（WordDocument 里的 fcPlcBte 是相对于 WordDocument 流的）
+    // 简化方案：按段落文本里的 "\u0007"（cell mark）和 "\u000D"（para mark）重建表格
+    //          从 paragraphs 中识别出表格段落（含多个 \x07 分隔），组装成 matrix
+    // 实际上 Word 的 table 数据存于 1Table/0Table stream 里按 fcClx+PlcBte 定位
+    // MVP 简化：把 paragraphs 里包含 "\u0007" 的段当成表格行
+    const rows = [];
+    for (const p of rawParas) {
+      if (p.includes('\u0007')) {
+        const cells = p.split('\u0007').map(c => c.replace(/[\x00-\x08\x0B-\x1F]/g, '').trim()).filter(c => c);
+        if (cells.length >= 2) rows.push(cells);
+      }
+    }
+    // 简单启发式：从 rows 里切出多张表（遇到空行或表头变化）
+    let curTable = [];
+    for (const r of rows) {
+      curTable.push(r);
+      if (r.length <= 1) {
+        if (curTable.length >= 2) tables.push(curTable);
+        curTable = [];
+      }
+    }
+    if (curTable.length >= 2) tables.push(curTable);
+  }
+
+  // fallback：从 paragraphs 重建（把连续多行视为单表）
+  if (!tables.length && paragraphs.length > 1) {
+    tables.push([paragraphs]);
+  }
+
+  return { tables, paragraphs };
 }
 
 function bindLedger() {
@@ -2640,7 +3042,7 @@ function recordToRow(r) {
     '标段': r.section,
     '单位工程': r.unit_engineering,
     '分部工程': r.division,
-    '部位': r.part,
+    '单元工程': r.unit_work || r.part || '',
     '检测项目类别': cat?.name || r.category,
     '规格型号': r.spec,
     '报告编号': r.report_no,
@@ -2648,10 +3050,6 @@ function recordToRow(r) {
     '检测日期': formatDate(r.test_date),
     '代表批量': r.representative_batch,
     '检测单位': r.test_unit,
-    '施工单位签字人': r.construction_signer,
-    '施工单位签字日期': formatDate(r.construction_sign_date),
-    '监理单位签字人': r.supervision_signer,
-    '监理单位签字日期': formatDate(r.supervision_sign_date),
     '判定结果': r.judgment,
     '备注': r.remark,
     '导入方式': r.import_mode === 'witness_loose'
@@ -2746,17 +3144,17 @@ function downloadTemplate() {
     ['3. 标段、单位工程、分部工程必须与系统「标段单位工程」Tab 的项目划分清单一致（系统已内置温潮减河工程 8 标段/35 单位工程/186 分部工程）'],
     ['4. 规格必须在系统「类别管理」中的规格枚举内'],
     ['5. 报告编号+试件编号 必须唯一，重复导入将被拒绝'],
-    ['6. 施工/监理签字日期请填写实际签字日期（不默认今天）'],
-    ['7. 判定结果由系统自动判定，无需填写（填写也会被覆盖）'],
+    ['6. 判定结果由系统自动判定，无需填写（填写也会被覆盖）'],
+    ['7. 单元工程 = 分部工程内更细的结构部位（如闸室段下的地基防渗、闸室段、消能防冲段），可不填'],
     [],
-    ['通用字段：报告编号*、试件编号*、检测日期*、标段*、单位工程*、分部工程*、部位、规格型号*、代表批量、检测单位、施工单位签字人、施工单位签字日期、监理单位签字人、监理单位签字日期、备注'],
+    ['通用字段：报告编号*、试件编号*、检测日期*、标段*、单位工程*、分部工程*、单元工程、规格型号*、代表批量、检测单位、备注'],
     [],
     ['分部工程填写：须与项目划分清单中的名称完全一致（如「闸室段」「河道、筑堤及护砌工程(12+500~12+900)」），可在「标段单位工程」Tab 查询。'],
   ];
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(help), '填写说明');
 
   for (const cat of S.categories) {
-    const headers = ['报告编号*', '试件编号*', '检测日期*', '标段*', '单位工程*', '分部工程*', '部位', '规格型号*', '代表批量', '检测单位', '施工单位签字人', '施工单位签字日期', '监理单位签字人', '监理单位签字日期', '备注'];
+    const headers = ['报告编号*', '试件编号*', '检测日期*', '标段*', '单位工程*', '分部工程*', '单元工程', '规格型号*', '代表批量', '检测单位', '备注'];
     cat.fields.forEach(f => headers.push(f.label + (f.required ? '*' : '')));
     headers.push('判定结果(自动)');
     // 示例行
