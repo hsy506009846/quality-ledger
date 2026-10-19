@@ -1,0 +1,2794 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全标段质量检测统计台账系统</title>
+<script src="assets/lib/xlsx.full.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif; background: #f3f4f6; color: #1f2937; font-size: 14px; }
+.header { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: #fff; padding: 14px 24px; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+.header h1 { font-size: 20px; font-weight: 600; }
+.header .sub { font-size: 12px; opacity: .85; margin-top: 2px; }
+.tabs { display: flex; background: #1e40af; flex-wrap: wrap; }
+.tab { padding: 12px 20px; color: #dbeafe; cursor: pointer; border-bottom: 3px solid transparent; transition: all .15s; user-select: none; font-size: 14px; }
+.tab:hover { background: #1d4ed8; }
+.tab.active { background: #2563eb; color: #fff; border-bottom-color: #fbbf24; }
+.container { padding: 20px; max-width: 1600px; margin: 0 auto; }
+.card { background: #fff; border-radius: 8px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.card h2 { font-size: 16px; margin-bottom: 12px; color: #1e3a8a; border-left: 4px solid #2563eb; padding-left: 10px; }
+.btn { display: inline-block; padding: 7px 16px; background: #2563eb; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; margin: 2px; }
+.btn:hover { background: #1d4ed8; }
+.btn.warn { background: #d97706; }
+.btn.warn:hover { background: #b45309; }
+.btn.danger { background: #dc2626; }
+.btn.danger:hover { background: #b91c1c; }
+.btn.ghost { background: #6b7280; }
+.btn.ghost:hover { background: #4b5563; }
+.btn.sm { padding: 4px 10px; font-size: 12px; }
+input, select, textarea { padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 13px; font-family: inherit; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: #2563eb; }
+label { font-size: 13px; color: #374151; margin-right: 6px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { background: #f3f4f6; color: #374151; padding: 8px 10px; text-align: left; border-bottom: 2px solid #e5e7eb; position: sticky; top: 0; white-space: nowrap; }
+td { padding: 6px 10px; border-bottom: 1px solid #f3f4f6; }
+tr:hover td { background: #eff6ff; }
+tr.bad td { background: #fef2f2; }
+tr.deleted td { opacity: .45; text-decoration: line-through; }
+.matrix th, .matrix td { text-align: center; border: 1px solid #e5e7eb; }
+.matrix .ok { color: #059669; }
+.matrix .bad { color: #dc2626; font-weight: 600; }
+.matrix .zero { color: #9ca3af; }
+.stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.stat-card { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); border-left: 4px solid #2563eb; }
+.stat-card.danger { border-left-color: #dc2626; }
+.stat-card.warn { border-left-color: #d97706; }
+.stat-card .num { font-size: 26px; font-weight: 700; color: #1e3a8a; }
+.stat-card.danger .num { color: #dc2626; }
+.stat-card.warn .num { color: #d97706; }
+.stat-card .lbl { font-size: 12px; color: #6b7280; margin-top: 4px; }
+.toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+.dropzone { border: 2px dashed #93c5fd; border-radius: 8px; padding: 40px; text-align: center; color: #2563eb; cursor: pointer; transition: all .15s; }
+.dropzone:hover, .dropzone.drag { background: #eff6ff; border-color: #2563eb; }
+.log { background: #1f2937; color: #d1d5db; padding: 12px; border-radius: 6px; font-family: Consolas, monospace; font-size: 12px; max-height: 240px; overflow: auto; }
+.log .err { color: #fca5a5; }
+.log .ok { color: #86efac; }
+.log .warn { color: #fcd34d; }
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 100; justify-content: center; align-items: center; }
+.modal-bg.show { display: flex; }
+.modal { background: #fff; border-radius: 8px; padding: 24px; min-width: 400px; max-width: 90vw; max-height: 85vh; overflow: auto; }
+.modal h3 { margin-bottom: 16px; color: #1e3a8a; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; background: #dbeafe; color: #1e40af; margin: 1px; }
+.tag.red { background: #fee2e2; color: #991b1b; }
+.tag.green { background: #d1fae5; color: #065f46; }
+.pagination { display: flex; gap: 6px; justify-content: center; margin-top: 12px; align-items: center; }
+.pagination button { padding: 4px 10px; border: 1px solid #d1d5db; background: #fff; border-radius: 4px; cursor: pointer; }
+.pagination button.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+.pagination button:disabled { opacity: .4; cursor: not-allowed; }
+.editable { cursor: text; }
+.editable:focus { background: #fef3c7; outline: 2px solid #f59e0b; }
+.muted { color: #6b7280; font-size: 12px; }
+.tip { background: #eff6ff; border: 1px solid #bfdbfe; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: #1e40af; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>全标段质量检测统计台账系统</h1>
+  <div class="sub" id="projectInfo">单机版 · 离线运行 · 数据存储于本机浏览器 IndexedDB</div>
+</div>
+<div class="tabs" id="tabs"></div>
+<div class="container" id="content"></div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal" id="modalBody"></div>
+</div>
+
+<script>
+// ========================= 全局状态 =========================
+const S = {
+  db: null,
+  categories: [],
+  standards: [],
+  specs: {},
+  sections: [],
+  unitEngineerings: [],
+  divisions: [],
+  signers: { construction: [], supervision: [] },
+  testUnits: [],
+  settings: {},
+  records: [],
+  tab: 'dashboard',
+  ledgerFilters: {},
+  ledgerPage: 1,
+  pageSize: 50
+};
+
+const TABS = [
+  { key: 'dashboard', label: '看板' },
+  { key: 'upload', label: '上传' },
+  { key: 'ledger', label: '台账' },
+  { key: 'sections', label: '标段单位工程' },
+  { key: 'categories', label: '类别管理' },
+  { key: 'standards', label: '判定标准' },
+  { key: 'settings', label: '系统设置' }
+];
+
+// ========================= IndexedDB 封装 =========================
+const DB = {
+  name: 'quality_ledger',
+  version: 3,
+  open() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(this.name, this.version);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        const stores = {
+          records: { keyPath: 'record_id' },
+          categories: { keyPath: 'key' },
+          standards: { keyPath: 'id', autoIncrement: true },
+          sections: { keyPath: 'code' },
+          unit_engineerings: { keyPath: 'ue_code' },
+          divisions: { keyPath: 'code' },
+          signers: { keyPath: 'id', autoIncrement: true },
+          test_units: { keyPath: 'name' },
+          settings: { keyPath: 'k' },
+          file_hashes: { keyPath: 'hash' }
+        };
+        for (const [name, opts] of Object.entries(stores)) {
+          if (!db.objectStoreNames.contains(name)) {
+            const os = db.createObjectStore(name, opts);
+            if (name === 'records') {
+              os.createIndex('report_specimen', ['report_no', 'specimen_no'], { unique: false });
+              os.createIndex('section', 'section', { unique: false });
+              os.createIndex('category', 'category', { unique: false });
+              os.createIndex('is_deleted', 'is_deleted', { unique: false });
+              os.createIndex('judgment', 'judgment', { unique: false });
+            }
+          }
+        }
+        // v3 起：report_no+specimen_no 唯一索引改为非唯一。
+        // 宽松导入的见证台账常含报告编号/试件编号为空的行，唯一索引会导致整批写入失败；去重改在代码层完成。
+        if (db.objectStoreNames.contains('records')) {
+          const os = e.target.transaction.objectStore('records');
+          if (os.indexNames.contains('report_specimen')) os.deleteIndex('report_specimen');
+          os.createIndex('report_specimen', ['report_no', 'specimen_no'], { unique: false });
+        }
+      };
+      req.onsuccess = (e) => { S.db = e.target.result; resolve(); };
+      req.onerror = (e) => reject(e.target.error);
+    });
+  },
+  tx(store, mode = 'readonly') {
+    return S.db.transaction(store, mode).objectStore(store);
+  },
+  getAll(store) {
+    return new Promise((resolve, reject) => {
+      const req = this.tx(store).getAll();
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  },
+  put(store, value) {
+    return new Promise((resolve, reject) => {
+      const req = this.tx(store, 'readwrite').put(value);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  },
+  bulkPut(store, values) {
+    return new Promise((resolve, reject) => {
+      const tx = S.db.transaction(store, 'readwrite');
+      const os = tx.objectStore(store);
+      values.forEach(v => os.put(v));
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  },
+  delete(store, key) {
+    return new Promise((resolve, reject) => {
+      const req = this.tx(store, 'readwrite').delete(key);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  },
+  clear(store) {
+    return new Promise((resolve, reject) => {
+      const req = this.tx(store, 'readwrite').clear();
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  },
+  getFileHash(hash) {
+    return new Promise((resolve) => {
+      const req = this.tx('file_hashes').get(hash);
+      req.onsuccess = () => resolve(req.result || null);
+    });
+  },
+  putFileHash(hash, fileName) {
+    return this.put('file_hashes', { hash, file_name: fileName, imported_at: Date.now() });
+  }
+};
+
+// ========================= 工具函数 =========================
+function uuid() {
+  return 'r-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+}
+function fmt(n, d = 1) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  return Number(n).toFixed(d);
+}
+function fmtPct(n) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  return (n * 100).toFixed(1) + '%';
+}
+function formatDate(d) {
+  if (!d) return '';
+  const dt = d instanceof Date ? d : new Date(d);
+  if (isNaN(dt)) return String(d);
+  return dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+}
+function todayStr() {
+  return formatDate(new Date());
+}
+function sha256Buf(buf) {
+  return crypto.subtle.digest('SHA-256', buf).then(h =>
+    Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2, '0')).join(''));
+}
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 100);
+}
+function downloadJSON(obj, filename) {
+  downloadBlob(new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' }), filename);
+}
+function showModal(html) {
+  document.getElementById('modalBody').innerHTML = html;
+  document.getElementById('modal').classList.add('show');
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+function log(msg, type = '') {
+  const logEl = document.getElementById('uploadLog');
+  if (!logEl) return;
+  const div = document.createElement('div');
+  div.className = type;
+  div.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+  logEl.appendChild(div);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+// ========================= 配置加载 =========================
+// 内嵌默认配置兜底：双击以 file:// 打开时浏览器拦截 fetch，改用内嵌副本
+// 默认标准依据《水利工程建设质量检测管理规范》DB11/T 3032-2022（北京市地方标准）
+const EMBED_DEFAULTS = {
+  // 内置默认配置版本：低于该版本的本机库会在启动时自动升级默认类别/标准/项目划分（检测记录不受影响）
+  config_version: 2,
+  categories: [
+    {
+      "key": "concrete_compressive",
+      "name": "混凝土抗压强度",
+      "description": "混凝土立方体抗压强度检测（水工混凝土）",
+      "spec_enum_key": "concrete_strength",
+      "standard_ref": "SL/T 352 / GB/T 50081",
+      "source": "DB11/T 3032-2022 表F.58",
+      "note": "检测频次按 SL 677：大体积混凝土每500m³成型一组，结构混凝土每100m³成型一组，不足上述量者也成型一组；强度评定按 SL 176 及 GB/T 50107 执行。",
+      "fields": [
+        {
+          "key": "age_days",
+          "label": "龄期(d)",
+          "type": "number",
+          "default": 28,
+          "required": true
+        },
+        {
+          "key": "breaking_load_kn",
+          "label": "破坏荷载(kN)",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "strength_mpa",
+          "label": "抗压强度(MPa)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "representative_value_mpa",
+          "label": "代表值(MPa)",
+          "type": "number",
+          "required": false
+        }
+      ]
+    },
+    {
+      "key": "rebar_tensile",
+      "name": "钢筋原材拉伸",
+      "description": "热轧光圆/带肋钢筋原材力学性能检测",
+      "spec_enum_key": "rebar_grade",
+      "standard_ref": "GB/T 1499.1 / GB/T 1499.2 / GB/T 28900",
+      "source": "DB11/T 3032-2022 表F.17、表F.18",
+      "note": "常规检测项：下屈服强度、抗拉强度、断后伸长率、最大力总延伸率、弯曲性能、重量偏差。每批由同一牌号、同一炉罐号、同一尺寸钢筋组成，每批重量不大于60t；拉伸、弯曲试件应从不同根钢筋切取。",
+      "fields": [
+        {
+          "key": "grade",
+          "label": "牌号",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "diameter_mm",
+          "label": "直径(mm)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "yield_strength_mpa",
+          "label": "下屈服强度(MPa)",
+          "aliases": [
+            "屈服强度"
+          ],
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "tensile_strength_mpa",
+          "label": "抗拉强度(MPa)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "elongation_percent",
+          "label": "断后伸长率(%)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "agt_percent",
+          "label": "最大力总延伸率(%)",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "weight_deviation_percent",
+          "label": "重量偏差(%)",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "cold_bend",
+          "label": "弯曲性能",
+          "aliases": [
+            "冷弯"
+          ],
+          "type": "enum",
+          "options": [
+            "合格",
+            "不合格"
+          ],
+          "required": true
+        }
+      ]
+    },
+    {
+      "key": "rebar_welded_joint",
+      "name": "钢筋焊接接头",
+      "description": "钢筋焊接接头拉伸（及弯曲）试验",
+      "spec_enum_key": "welding_type",
+      "standard_ref": "JGJ/T 27 / JGJ 18",
+      "source": "DB11/T 3032-2022 表F.60～表F.63",
+      "note": "同一台班内同一焊工完成的300个同牌号、同直径接头为一批，不足按一批计；闪光对焊每批切6个接头（3拉3弯），电弧焊/电渣压力焊每批切3个做拉伸，气压焊柱墙竖向切3个拉伸、梁板水平另切3个弯曲。",
+      "fields": [
+        {
+          "key": "welding_type",
+          "label": "焊接类型",
+          "type": "enum",
+          "options": [
+            "电弧焊",
+            "电渣压力焊",
+            "气压焊",
+            "闪光对焊",
+            "电弧搭接焊",
+            "帮条焊"
+          ],
+          "required": true
+        },
+        {
+          "key": "grade",
+          "label": "牌号",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "diameter_mm",
+          "label": "直径(mm)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "tensile_strength_mpa",
+          "label": "抗拉强度(MPa)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "bend_performance",
+          "label": "弯曲性能",
+          "type": "enum",
+          "options": [
+            "合格",
+            "不合格"
+          ],
+          "required": false
+        },
+        {
+          "key": "fracture_location",
+          "label": "断裂位置",
+          "type": "enum",
+          "options": [
+            "焊缝",
+            "母材",
+            "热影响区"
+          ],
+          "required": true
+        },
+        {
+          "key": "fracture_form",
+          "label": "断裂形态",
+          "type": "enum",
+          "options": [
+            "延性",
+            "脆性"
+          ],
+          "required": true
+        }
+      ]
+    },
+    {
+      "key": "mortar_compressive",
+      "name": "砂浆抗压强度",
+      "description": "砌筑、抹面砂浆立方体试件抗压强度检测",
+      "spec_enum_key": "mortar_grade",
+      "standard_ref": "SL/T 352 / GB/T 50107",
+      "source": "DB11/T 3032-2022 附录F（砂浆）",
+      "note": "每台班或每50m³砂浆成型一组试块（不足亦成型一组）；评定：同一验收批平均值不低于设计强度等级，最小值不低于设计强度的75%。依据 DB11/T 3032-2022。",
+      "fields": [
+        {
+          "key": "age_days",
+          "label": "龄期(d)",
+          "type": "number",
+          "default": 28,
+          "required": true
+        },
+        {
+          "key": "strength_mpa",
+          "label": "抗压强度(MPa)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "representative_value_mpa",
+          "label": "代表值(MPa)",
+          "type": "number",
+          "required": false
+        }
+      ]
+    },
+    {
+      "key": "concrete_flexural",
+      "name": "混凝土抗折(弯拉)强度",
+      "description": "水泥混凝土弯拉（抗折）强度检测",
+      "spec_enum_key": "flexural_grade",
+      "standard_ref": "SL/T 352 / JTG/T F30 / GB/T 50081",
+      "source": "DB11/T 3032-2022 附录F",
+      "note": "抗折试件每100m³或每工作班成型一组；评定：抗折（弯拉）强度代表值不低于设计弯拉强度标准值。规格栏填设计弯拉强度（MPa）。",
+      "fields": [
+        {
+          "key": "age_days",
+          "label": "龄期(d)",
+          "type": "number",
+          "default": 28,
+          "required": true
+        },
+        {
+          "key": "flexural_strength_mpa",
+          "label": "抗折强度(MPa)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "representative_value_mpa",
+          "label": "代表值(MPa)",
+          "type": "number",
+          "required": false
+        }
+      ]
+    },
+    {
+      "key": "concrete_impermeability",
+      "name": "混凝土抗渗性能",
+      "description": "混凝土抗渗等级（渗透性能）检测",
+      "spec_enum_key": "impermeability_grade",
+      "standard_ref": "SL/T 352 / GB/T 50082",
+      "source": "DB11/T 3032-2022 附录F（混凝土耐久性）",
+      "note": "抗渗试件按设计抗渗等级确定组数，一般同一配合比每500m³或每工作班一组；评定：实测抗渗等级不低于设计抗渗等级。",
+      "fields": [
+        {
+          "key": "measured_grade",
+          "label": "实测抗渗等级",
+          "type": "enum",
+          "options": [
+            "W4",
+            "W6",
+            "W8",
+            "W10",
+            "W12"
+          ],
+          "required": true
+        },
+        {
+          "key": "seepage_height_mm",
+          "label": "渗水高度(mm)",
+          "type": "number",
+          "required": false
+        }
+      ]
+    },
+    {
+      "key": "concrete_frost",
+      "name": "混凝土抗冻性能",
+      "description": "混凝土抗冻等级（冻融循环）检测",
+      "spec_enum_key": "frost_grade",
+      "standard_ref": "SL/T 352 / GB/T 50082",
+      "source": "DB11/T 3032-2022 附录F（混凝土耐久性）",
+      "note": "抗冻试件按设计抗冻等级确定；评定：经受设计规定的冻融循环次数后，相对动弹模不低于60%且质量损失率不超过5%。规格栏填设计抗冻等级F。",
+      "fields": [
+        {
+          "key": "freeze_cycles",
+          "label": "冻融循环次数",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "relative_dynamic_modulus",
+          "label": "相对动弹模(%)",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "mass_loss_percent",
+          "label": "质量损失率(%)",
+          "type": "number",
+          "required": false
+        }
+      ]
+    },
+    {
+      "key": "compaction_degree",
+      "name": "土方压实度",
+      "description": "填筑土方压实度检测（灌砂法/环刀法）",
+      "spec_enum_key": "compaction_spec",
+      "standard_ref": "SL 237 / JTG 3430 / SL 677",
+      "source": "DB11/T 3032-2022 附录F / SL 677",
+      "note": "逐层或按规定批量抽检；评定：实测压实度不低于设计压实度。规格栏填设计压实度（%），如95代表95%。",
+      "fields": [
+        {
+          "key": "max_dry_density",
+          "label": "最大干密度(g/cm³)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "dry_density",
+          "label": "实测干密度(g/cm³)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "compaction_percent",
+          "label": "压实度(%)",
+          "type": "number",
+          "required": true
+        }
+      ]
+    },
+    {
+      "key": "rebar_mech_joint",
+      "name": "钢筋机械连接接头",
+      "description": "钢筋机械连接接头拉伸试验",
+      "spec_enum_key": "rebar_grade",
+      "standard_ref": "JGJ 107 / GB/T 28900",
+      "source": "DB11/T 3032-2022 附录F（钢筋接头）",
+      "note": "同一施工条件下采用同一批材料的同等级、同型式、同规格接头，每500个为一批，不足按一批计；评定：接头抗拉强度不低于母材抗拉强度标准值。",
+      "fields": [
+        {
+          "key": "grade",
+          "label": "牌号",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "diameter_mm",
+          "label": "直径(mm)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "joint_type",
+          "label": "接头型式",
+          "type": "enum",
+          "options": [
+            "直螺纹",
+            "锥螺纹",
+            "镦粗直螺纹",
+            "挤压套筒"
+          ],
+          "required": true
+        },
+        {
+          "key": "tensile_strength_mpa",
+          "label": "抗拉强度(MPa)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "residual_deformation_mm",
+          "label": "残余变形(mm)",
+          "type": "number",
+          "required": false
+        }
+      ]
+    },
+    {
+      "key": "prestress_strand",
+      "name": "预应力钢绞线",
+      "description": "预应力混凝土用钢绞线力学性能检测",
+      "spec_enum_key": "strand_spec",
+      "standard_ref": "GB/T 5224 / GB/T 21839",
+      "source": "DB11/T 3032-2022 附录F（预应力材料）",
+      "note": "同一牌号、同一规格、同一生产工艺的钢绞线每批不超过60t；评定：抗拉强度、规定非比例延伸力、最大力总延伸率满足 GB/T 5224 相应规格要求（常用1860MPa级）。",
+      "fields": [
+        {
+          "key": "tensile_strength_mpa",
+          "label": "抗拉强度(MPa)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "non_proportional_extension_force_kn",
+          "label": "规定非比例延伸力(kN)",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "max_force_elongation_percent",
+          "label": "最大力总延伸率(%)",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "relaxation_percent",
+          "label": "应力松弛率(%)",
+          "type": "number",
+          "required": false
+        }
+      ]
+    },
+    {
+      "key": "pile_integrity",
+      "name": "桩身完整性",
+      "description": "灌注桩/预制桩桩身完整性检测（低应变/声波透射）",
+      "spec_enum_key": "pile_diameter",
+      "standard_ref": "JGJ 106 / JTG/T 3512 / DB11/T 3032-2022",
+      "source": "DB11/T 3032-2022 附录F（地基基础）",
+      "note": "低应变检测数量按规范抽检；声波透射法用于重要桩；评定：桩身完整性类别为Ⅰ类、Ⅱ类为合格。规格栏填桩径(mm)。",
+      "fields": [
+        {
+          "key": "pile_no",
+          "label": "桩号",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "test_method",
+          "label": "检测方法",
+          "type": "enum",
+          "options": [
+            "低应变",
+            "声波透射",
+            "高应变"
+          ],
+          "required": true
+        },
+        {
+          "key": "integrity_category",
+          "label": "完整性类别",
+          "type": "enum",
+          "options": [
+            "I",
+            "II",
+            "III",
+            "IV"
+          ],
+          "required": true
+        }
+      ]
+    },
+    {
+      "key": "cement_material",
+      "name": "水泥(原材)",
+      "description": "通用硅酸盐水泥原材物理力学性能检测",
+      "spec_enum_key": "cement_type",
+      "standard_ref": "GB 175 / GB/T 17671 / GB/T 1346",
+      "source": "DB11/T 3032-2022 附录F（水泥）",
+      "note": "同一生产厂家、同一品种、同一强度等级、同一批号且连续进场的水泥，散装每500t、袋装每200t为一批；评定：安定性合格，28d抗压、抗折强度不低于 GB 175 相应强度等级要求。",
+      "fields": [
+        {
+          "key": "compressive_28d_mpa",
+          "label": "28d抗压强度(MPa)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "flexural_28d_mpa",
+          "label": "28d抗折强度(MPa)",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "soundness",
+          "label": "安定性",
+          "type": "enum",
+          "options": [
+            "合格",
+            "不合格"
+          ],
+          "required": true
+        },
+        {
+          "key": "initial_setting_min",
+          "label": "初凝时间(min)",
+          "type": "number",
+          "required": false
+        }
+      ]
+    }
+  ],
+  specs: {
+    "concrete_strength": [
+      "C15",
+      "C20",
+      "C25",
+      "C30",
+      "C35",
+      "C40",
+      "C45",
+      "C50",
+      "C55",
+      "C60"
+    ],
+    "rebar_grade": [
+      "HPB300",
+      "HRB400",
+      "HRB500",
+      "HRBF400",
+      "HRBF500",
+      "RRB400"
+    ],
+    "welding_type": [
+      "电弧焊",
+      "电渣压力焊",
+      "气压焊",
+      "闪光对焊",
+      "电弧搭接焊",
+      "帮条焊"
+    ],
+    "fracture_location": [
+      "焊缝",
+      "母材",
+      "热影响区"
+    ],
+    "fracture_form": [
+      "延性",
+      "脆性"
+    ],
+    "cold_bend": [
+      "合格",
+      "不合格"
+    ],
+    "judgment": [
+      "合格",
+      "不合格"
+    ],
+    "mortar_grade": [
+      "M5",
+      "M7.5",
+      "M10",
+      "M15",
+      "M20",
+      "M25",
+      "M30"
+    ],
+    "flexural_grade": [
+      "3.5",
+      "4.0",
+      "4.5",
+      "5.0",
+      "5.5"
+    ],
+    "impermeability_grade": [
+      "W4",
+      "W6",
+      "W8",
+      "W10",
+      "W12"
+    ],
+    "frost_grade": [
+      "F50",
+      "F100",
+      "F150",
+      "F200",
+      "F250",
+      "F300"
+    ],
+    "compaction_spec": [
+      "88",
+      "90",
+      "92",
+      "93",
+      "95",
+      "96",
+      "98",
+      "100"
+    ],
+    "strand_spec": [
+      "φs12.7",
+      "φs15.2",
+      "φs17.8",
+      "φs21.6"
+    ],
+    "pile_diameter": [
+      "600",
+      "800",
+      "1000",
+      "1200",
+      "1500",
+      "1800",
+      "2000"
+    ],
+    "cement_type": [
+      "P.O 42.5",
+      "P.O 52.5",
+      "P.C 32.5",
+      "P.S.A 32.5",
+      "P.II 42.5",
+      "P.II 52.5"
+    ]
+  },
+  standards: [
+    {
+      "category_key": "concrete_compressive",
+      "spec": "C15",
+      "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+      "method": "statistical_or_nonstatistical",
+      "fcu_k": 15,
+      "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+    },
+    {
+      "category_key": "concrete_compressive",
+      "spec": "C20",
+      "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+      "method": "statistical_or_nonstatistical",
+      "fcu_k": 20,
+      "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+    },
+    {
+      "category_key": "concrete_compressive",
+      "spec": "C25",
+      "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+      "method": "statistical_or_nonstatistical",
+      "fcu_k": 25,
+      "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+    },
+    {
+      "category_key": "concrete_compressive",
+      "spec": "C30",
+      "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+      "method": "statistical_or_nonstatistical",
+      "fcu_k": 30,
+      "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+    },
+    {
+      "category_key": "concrete_compressive",
+      "spec": "C35",
+      "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+      "method": "statistical_or_nonstatistical",
+      "fcu_k": 35,
+      "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+    },
+    {
+      "category_key": "concrete_compressive",
+      "spec": "C40",
+      "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+      "method": "statistical_or_nonstatistical",
+      "fcu_k": 40,
+      "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+    },
+    {
+      "category_key": "concrete_compressive",
+      "spec": "C45",
+      "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+      "method": "statistical_or_nonstatistical",
+      "fcu_k": 45,
+      "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+    },
+    {
+      "category_key": "concrete_compressive",
+      "spec": "C50",
+      "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+      "method": "statistical_or_nonstatistical",
+      "fcu_k": 50,
+      "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+    },
+    {
+      "category_key": "concrete_compressive",
+      "spec": "C55",
+      "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+      "method": "statistical_or_nonstatistical",
+      "fcu_k": 55,
+      "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+    },
+    {
+      "category_key": "concrete_compressive",
+      "spec": "C60",
+      "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+      "method": "statistical_or_nonstatistical",
+      "fcu_k": 60,
+      "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+    },
+    {
+      "category_key": "rebar_tensile",
+      "spec": "HPB300",
+      "standard_no": "GB/T 1499.1 / GB/T 28900",
+      "yield_min": 300,
+      "tensile_min": 420,
+      "elongation_min": 21,
+      "cold_bend_required": true,
+      "note": "依据DB11/T 3032-2022表F.17(热轧光圆钢筋)。频次: 每批由同一牌号、同一炉罐号、同一尺寸组成, 每批≤60t, 拉伸弯曲试件从不同根钢筋切取。判定: 下屈服强度>=300MPa, 抗拉强度>=420MPa, 断后伸长率>=21%, 弯曲性能合格"
+    },
+    {
+      "category_key": "rebar_tensile",
+      "spec": "HRB400",
+      "standard_no": "GB/T 1499.2 / GB/T 28900",
+      "yield_min": 400,
+      "tensile_min": 540,
+      "elongation_min": 16,
+      "cold_bend_required": true,
+      "note": "依据DB11/T 3032-2022表F.18(热轧带肋钢筋)。频次: 每批由同一牌号、同一炉罐号、同一尺寸组成, 每批≤60t, 拉伸弯曲试件从不同根钢筋切取。常规项: 下屈服强度、抗拉强度、断后伸长率、最大力总延伸率、弯曲性能、重量偏差。判定: 下屈服强度>=400MPa, 抗拉强度>=540MPa, 断后伸长率>=16%, 弯曲性能合格"
+    },
+    {
+      "category_key": "rebar_tensile",
+      "spec": "HRB500",
+      "standard_no": "GB/T 1499.2 / GB/T 28900",
+      "yield_min": 500,
+      "tensile_min": 630,
+      "elongation_min": 15,
+      "cold_bend_required": true,
+      "note": "依据DB11/T 3032-2022表F.18(热轧带肋钢筋)。频次: 每批由同一牌号、同一炉罐号、同一尺寸组成, 每批≤60t, 拉伸弯曲试件从不同根钢筋切取。判定: 下屈服强度>=500MPa, 抗拉强度>=630MPa, 断后伸长率>=15%, 弯曲性能合格"
+    },
+    {
+      "category_key": "rebar_tensile",
+      "spec": "HRBF400",
+      "standard_no": "GB/T 1499.2 / GB/T 28900",
+      "yield_min": 400,
+      "tensile_min": 540,
+      "elongation_min": 16,
+      "cold_bend_required": true,
+      "note": "依据DB11/T 3032-2022表F.18(热轧带肋钢筋)。频次: 每批由同一牌号、同一炉罐号、同一尺寸组成, 每批≤60t。判定: 下屈服强度>=400MPa, 抗拉强度>=540MPa, 断后伸长率>=16%, 弯曲性能合格"
+    },
+    {
+      "category_key": "rebar_tensile",
+      "spec": "HRBF500",
+      "standard_no": "GB/T 1499.2 / GB/T 28900",
+      "yield_min": 500,
+      "tensile_min": 630,
+      "elongation_min": 15,
+      "cold_bend_required": true,
+      "note": "依据DB11/T 3032-2022表F.18(热轧带肋钢筋)。频次: 每批由同一牌号、同一炉罐号、同一尺寸组成, 每批≤60t。判定: 下屈服强度>=500MPa, 抗拉强度>=630MPa, 断后伸长率>=15%, 弯曲性能合格"
+    },
+    {
+      "category_key": "rebar_tensile",
+      "spec": "RRB400",
+      "standard_no": "GB/T 1499.2 / GB/T 28900",
+      "yield_min": 400,
+      "tensile_min": 540,
+      "elongation_min": 14,
+      "cold_bend_required": true,
+      "note": "依据DB11/T 3032-2022表F.18(热轧带肋钢筋)。频次: 每批由同一牌号、同一炉罐号、同一尺寸组成, 每批≤60t。判定: 下屈服强度>=400MPa, 抗拉强度>=540MPa, 断后伸长率>=14%, 弯曲性能合格"
+    },
+    {
+      "category_key": "rebar_welded_joint",
+      "spec": "*",
+      "standard_no": "JGJ/T 27 / JGJ 18",
+      "tensile_min_factor": 1,
+      "fracture_location_pass": [
+        "母材"
+      ],
+      "fracture_form_pass": [
+        "延性"
+      ],
+      "note": "依据DB11/T 3032-2022表F.60～F.63。频次(JGJ 18): 同一台班同一焊工完成的300个同牌号同直径接头为一批, 不足按一批计; 闪光对焊每批切6个(3拉3弯), 电弧焊/电渣压力焊切3个拉伸, 气压焊竖向3拉水平3弯。判定: 抗拉强度>=母材标准抗拉强度, 断于母材且延性断裂为合格"
+    },
+    {
+      "category_key": "mortar_compressive",
+      "spec": "M5",
+      "standard_no": "SL/T 352 / GB/T 50107",
+      "fcu_k": 5,
+      "note": "依据DB11/T 3032-2022。频次: 每台班或每50m³成型一组。判定: 平均值>=设计强度等级(M5), 最小值>=设计强度的75%"
+    },
+    {
+      "category_key": "mortar_compressive",
+      "spec": "M7.5",
+      "standard_no": "SL/T 352 / GB/T 50107",
+      "fcu_k": 7.5,
+      "note": "依据DB11/T 3032-2022。频次: 每台班或每50m³成型一组。判定: 平均值>=设计强度等级(M7.5), 最小值>=设计强度的75%"
+    },
+    {
+      "category_key": "mortar_compressive",
+      "spec": "M10",
+      "standard_no": "SL/T 352 / GB/T 50107",
+      "fcu_k": 10,
+      "note": "依据DB11/T 3032-2022。频次: 每台班或每50m³成型一组。判定: 平均值>=设计强度等级(M10), 最小值>=设计强度的75%"
+    },
+    {
+      "category_key": "mortar_compressive",
+      "spec": "M15",
+      "standard_no": "SL/T 352 / GB/T 50107",
+      "fcu_k": 15,
+      "note": "依据DB11/T 3032-2022。频次: 每台班或每50m³成型一组。判定: 平均值>=设计强度等级(M15), 最小值>=设计强度的75%"
+    },
+    {
+      "category_key": "mortar_compressive",
+      "spec": "M20",
+      "standard_no": "SL/T 352 / GB/T 50107",
+      "fcu_k": 20,
+      "note": "依据DB11/T 3032-2022。频次: 每台班或每50m³成型一组。判定: 平均值>=设计强度等级(M20), 最小值>=设计强度的75%"
+    },
+    {
+      "category_key": "mortar_compressive",
+      "spec": "M25",
+      "standard_no": "SL/T 352 / GB/T 50107",
+      "fcu_k": 25,
+      "note": "依据DB11/T 3032-2022。频次: 每台班或每50m³成型一组。判定: 平均值>=设计强度等级(M25), 最小值>=设计强度的75%"
+    },
+    {
+      "category_key": "mortar_compressive",
+      "spec": "M30",
+      "standard_no": "SL/T 352 / GB/T 50107",
+      "fcu_k": 30,
+      "note": "依据DB11/T 3032-2022。频次: 每台班或每50m³成型一组。判定: 平均值>=设计强度等级(M30), 最小值>=设计强度的75%"
+    },
+    {
+      "category_key": "concrete_flexural",
+      "spec": "3.5",
+      "standard_no": "SL/T 352 / JTG/T F30",
+      "flexural_min": 3.5,
+      "note": "判定: 抗折(弯拉)强度代表值>=3.5MPa(设计弯拉强度标准值)"
+    },
+    {
+      "category_key": "concrete_flexural",
+      "spec": "4.0",
+      "standard_no": "SL/T 352 / JTG/T F30",
+      "flexural_min": 4,
+      "note": "判定: 抗折(弯拉)强度代表值>=4.0MPa(设计弯拉强度标准值)"
+    },
+    {
+      "category_key": "concrete_flexural",
+      "spec": "4.5",
+      "standard_no": "SL/T 352 / JTG/T F30",
+      "flexural_min": 4.5,
+      "note": "判定: 抗折(弯拉)强度代表值>=4.5MPa(设计弯拉强度标准值)"
+    },
+    {
+      "category_key": "concrete_flexural",
+      "spec": "5.0",
+      "standard_no": "SL/T 352 / JTG/T F30",
+      "flexural_min": 5,
+      "note": "判定: 抗折(弯拉)强度代表值>=5.0MPa(设计弯拉强度标准值)"
+    },
+    {
+      "category_key": "concrete_flexural",
+      "spec": "5.5",
+      "standard_no": "SL/T 352 / JTG/T F30",
+      "flexural_min": 5.5,
+      "note": "判定: 抗折(弯拉)强度代表值>=5.5MPa(设计弯拉强度标准值)"
+    },
+    {
+      "category_key": "concrete_impermeability",
+      "spec": "W4",
+      "standard_no": "SL/T 352 / GB/T 50082",
+      "grade_num": 4,
+      "note": "判定: 实测抗渗等级>=设计抗渗等级W4"
+    },
+    {
+      "category_key": "concrete_impermeability",
+      "spec": "W6",
+      "standard_no": "SL/T 352 / GB/T 50082",
+      "grade_num": 6,
+      "note": "判定: 实测抗渗等级>=设计抗渗等级W6"
+    },
+    {
+      "category_key": "concrete_impermeability",
+      "spec": "W8",
+      "standard_no": "SL/T 352 / GB/T 50082",
+      "grade_num": 8,
+      "note": "判定: 实测抗渗等级>=设计抗渗等级W8"
+    },
+    {
+      "category_key": "concrete_impermeability",
+      "spec": "W10",
+      "standard_no": "SL/T 352 / GB/T 50082",
+      "grade_num": 10,
+      "note": "判定: 实测抗渗等级>=设计抗渗等级W10"
+    },
+    {
+      "category_key": "concrete_impermeability",
+      "spec": "W12",
+      "standard_no": "SL/T 352 / GB/T 50082",
+      "grade_num": 12,
+      "note": "判定: 实测抗渗等级>=设计抗渗等级W12"
+    },
+    {
+      "category_key": "concrete_frost",
+      "spec": "F50",
+      "standard_no": "SL/T 352 / GB/T 50082",
+      "cycles_min": 50,
+      "note": "判定: 经50次冻融循环后相对动弹模>=60%且质量损失率<=5%"
+    },
+    {
+      "category_key": "concrete_frost",
+      "spec": "F100",
+      "standard_no": "SL/T 352 / GB/T 50082",
+      "cycles_min": 100,
+      "note": "判定: 经100次冻融循环后相对动弹模>=60%且质量损失率<=5%"
+    },
+    {
+      "category_key": "concrete_frost",
+      "spec": "F150",
+      "standard_no": "SL/T 352 / GB/T 50082",
+      "cycles_min": 150,
+      "note": "判定: 经150次冻融循环后相对动弹模>=60%且质量损失率<=5%"
+    },
+    {
+      "category_key": "concrete_frost",
+      "spec": "F200",
+      "standard_no": "SL/T 352 / GB/T 50082",
+      "cycles_min": 200,
+      "note": "判定: 经200次冻融循环后相对动弹模>=60%且质量损失率<=5%"
+    },
+    {
+      "category_key": "concrete_frost",
+      "spec": "F250",
+      "standard_no": "SL/T 352 / GB/T 50082",
+      "cycles_min": 250,
+      "note": "判定: 经250次冻融循环后相对动弹模>=60%且质量损失率<=5%"
+    },
+    {
+      "category_key": "concrete_frost",
+      "spec": "F300",
+      "standard_no": "SL/T 352 / GB/T 50082",
+      "cycles_min": 300,
+      "note": "判定: 经300次冻融循环后相对动弹模>=60%且质量损失率<=5%"
+    },
+    {
+      "category_key": "compaction_degree",
+      "spec": "88",
+      "standard_no": "SL 237 / JTG 3430 / SL 677",
+      "min_percent": 88,
+      "note": "判定: 实测压实度>=88%(设计压实度)"
+    },
+    {
+      "category_key": "compaction_degree",
+      "spec": "90",
+      "standard_no": "SL 237 / JTG 3430 / SL 677",
+      "min_percent": 90,
+      "note": "判定: 实测压实度>=90%(设计压实度)"
+    },
+    {
+      "category_key": "compaction_degree",
+      "spec": "92",
+      "standard_no": "SL 237 / JTG 3430 / SL 677",
+      "min_percent": 92,
+      "note": "判定: 实测压实度>=92%(设计压实度)"
+    },
+    {
+      "category_key": "compaction_degree",
+      "spec": "93",
+      "standard_no": "SL 237 / JTG 3430 / SL 677",
+      "min_percent": 93,
+      "note": "判定: 实测压实度>=93%(设计压实度)"
+    },
+    {
+      "category_key": "compaction_degree",
+      "spec": "95",
+      "standard_no": "SL 237 / JTG 3430 / SL 677",
+      "min_percent": 95,
+      "note": "判定: 实测压实度>=95%(设计压实度)"
+    },
+    {
+      "category_key": "compaction_degree",
+      "spec": "96",
+      "standard_no": "SL 237 / JTG 3430 / SL 677",
+      "min_percent": 96,
+      "note": "判定: 实测压实度>=96%(设计压实度)"
+    },
+    {
+      "category_key": "compaction_degree",
+      "spec": "98",
+      "standard_no": "SL 237 / JTG 3430 / SL 677",
+      "min_percent": 98,
+      "note": "判定: 实测压实度>=98%(设计压实度)"
+    },
+    {
+      "category_key": "compaction_degree",
+      "spec": "100",
+      "standard_no": "SL 237 / JTG 3430 / SL 677",
+      "min_percent": 100,
+      "note": "判定: 实测压实度>=100%(设计压实度)"
+    },
+    {
+      "category_key": "rebar_mech_joint",
+      "spec": "*",
+      "standard_no": "JGJ 107",
+      "tensile_min_factor": 1,
+      "note": "判定: 接头抗拉强度>=母材抗拉强度标准值(按牌号查 rebar_tensile 标准)"
+    },
+    {
+      "category_key": "prestress_strand",
+      "spec": "φs12.7",
+      "standard_no": "GB/T 5224",
+      "tensile_min": 1860,
+      "note": "常用1860MPa级钢绞线: 抗拉强度>=1860MPa, 最大力总延伸率>=3.5%, 应力松弛率符合GB/T 5224"
+    },
+    {
+      "category_key": "prestress_strand",
+      "spec": "φs15.2",
+      "standard_no": "GB/T 5224",
+      "tensile_min": 1860,
+      "note": "常用1860MPa级钢绞线: 抗拉强度>=1860MPa, 最大力总延伸率>=3.5%, 应力松弛率符合GB/T 5224"
+    },
+    {
+      "category_key": "prestress_strand",
+      "spec": "φs17.8",
+      "standard_no": "GB/T 5224",
+      "tensile_min": 1860,
+      "note": "常用1860MPa级钢绞线: 抗拉强度>=1860MPa, 最大力总延伸率>=3.5%, 应力松弛率符合GB/T 5224"
+    },
+    {
+      "category_key": "prestress_strand",
+      "spec": "φs21.6",
+      "standard_no": "GB/T 5224",
+      "tensile_min": 1860,
+      "note": "常用1860MPa级钢绞线: 抗拉强度>=1860MPa, 最大力总延伸率>=3.5%, 应力松弛率符合GB/T 5224"
+    },
+    {
+      "category_key": "pile_integrity",
+      "spec": "*",
+      "standard_no": "JGJ 106 / JTG/T 3512",
+      "pass_categories": [
+        "I",
+        "II"
+      ],
+      "note": "判定: 桩身完整性类别为Ⅰ类、Ⅱ类为合格"
+    },
+    {
+      "category_key": "cement_material",
+      "spec": "P.O 42.5",
+      "standard_no": "GB 175 / GB/T 17671",
+      "compressive_28d_min": 42.5,
+      "soundness_required": true,
+      "note": "依据GB 175。判定: 安定性合格, 28d抗压强度>=42.5MPa"
+    },
+    {
+      "category_key": "cement_material",
+      "spec": "P.O 52.5",
+      "standard_no": "GB 175 / GB/T 17671",
+      "compressive_28d_min": 52.5,
+      "soundness_required": true,
+      "note": "依据GB 175。判定: 安定性合格, 28d抗压强度>=52.5MPa"
+    },
+    {
+      "category_key": "cement_material",
+      "spec": "P.C 32.5",
+      "standard_no": "GB 175 / GB/T 17671",
+      "compressive_28d_min": 32.5,
+      "soundness_required": true,
+      "note": "依据GB 175。判定: 安定性合格, 28d抗压强度>=32.5MPa"
+    },
+    {
+      "category_key": "cement_material",
+      "spec": "P.S.A 32.5",
+      "standard_no": "GB 175 / GB/T 17671",
+      "compressive_28d_min": 32.5,
+      "soundness_required": true,
+      "note": "依据GB 175。判定: 安定性合格, 28d抗压强度>=32.5MPa"
+    },
+    {
+      "category_key": "cement_material",
+      "spec": "P.II 42.5",
+      "standard_no": "GB 175 / GB/T 17671",
+      "compressive_28d_min": 42.5,
+      "soundness_required": true,
+      "note": "依据GB 175。判定: 安定性合格, 28d抗压强度>=42.5MPa"
+    },
+    {
+      "category_key": "cement_material",
+      "spec": "P.II 52.5",
+      "standard_no": "GB 175 / GB/T 17671",
+      "compressive_28d_min": 52.5,
+      "soundness_required": true,
+      "note": "依据GB 175。判定: 安定性合格, 28d抗压强度>=52.5MPa"
+    }
+  ],
+  project: {"sections":[{"code":"施工一标","name":"施工一标"},{"code":"施工二标","name":"施工二标"},{"code":"施工三标","name":"施工三标"},{"code":"施工四标","name":"施工四标"},{"code":"施工五标","name":"施工五标"},{"code":"施工六标","name":"施工六标"},{"code":"施工七标","name":"施工七标"},{"code":"穿六环路标","name":"穿六环路标"}],"unit_engineerings":[{"ue_code":"WCJH-1-HD","ue_name":"河道工程","section":"施工一标"},{"ue_code":"WCJH-1-GBXHZ","ue_name":"港北泄洪闸工程","section":"施工一标"},{"ue_code":"WCJH-1-RGLQ","ue_name":"任港路桥工程","section":"施工一标"},{"ue_code":"WCJH-1-YDLQ","ue_name":"潮白河右堤路桥工程","section":"施工一标"},{"ue_code":"WCJH-2-HD","ue_name":"河道单位工程","section":"施工二标"},{"ue_code":"WCJH-2-PJTDQ","ue_name":"平家疃东桥单位工程","section":"施工二标"},{"ue_code":"WCJH-2-YTDS","ue_name":"余土堆山单位工程","section":"施工二标"},{"ue_code":"WCJH-3-HD","ue_name":"河道工程","section":"施工三标"},{"ue_code":"WCJH-3-YYHZ","ue_name":"月牙河节制闸工程","section":"施工三标"},{"ue_code":"WCJH-3-ZBHZ1","ue_name":"中坝河1#节制闸工程","section":"施工三标"},{"ue_code":"WCJH-3-ZBHZ2","ue_name":"中坝河2#节制闸工程","section":"施工三标"},{"ue_code":"WCJH-3-PJTQ","ue_name":"平家疃桥工程","section":"施工三标"},{"ue_code":"WCJH-3-PZLQ","ue_name":"平翟路桥工程","section":"施工三标"},{"ue_code":"WCJH-3-THLQ","ue_name":"通怀路桥工程","section":"施工三标"},{"ue_code":"WCJH-4-HD","ue_name":"河道工程","section":"施工四标"},{"ue_code":"WCJH-4-XPLQ1","ue_name":"徐平路1#桥工程","section":"施工四标"},{"ue_code":"WCJH-4-XPLQ2","ue_name":"徐平路2#桥工程","section":"施工四标"},{"ue_code":"WCJH-5-HD","ue_name":"河道工程","section":"施工五标"},{"ue_code":"WCJH-5-JZZ","ue_name":"小中河2#节制闸工程","section":"施工五标"},{"ue_code":"WCJH-5-GYNMQ","ue_name":"公园南门桥工程","section":"施工五标"},{"ue_code":"WCJH-5-TSLQ","ue_name":"通顺路桥工程","section":"施工五标"},{"ue_code":"WCJH-6-HD","ue_name":"河道工程","section":"施工六标"},{"ue_code":"WCJH-6-WD","ue_name":"新建围堤工程","section":"施工六标"},{"ue_code":"WCJH-6-BFLQ","ue_name":"壁富路桥工程","section":"施工六标"},{"ue_code":"WCJH-6-RXQ","ue_name":"东郊森林公园人行桥工程","section":"施工六标"},{"ue_code":"WCJH-6-CXQ","ue_name":"东郊森林公园车行桥工程","section":"施工六标"},{"ue_code":"WCJH-6-JZZ","ue_name":"小中河1#节制闸工程","section":"施工六标"},{"ue_code":"WCJH-6-YTDS","ue_name":"2#余土堆山工程","section":"施工六标"},{"ue_code":"WCJH-7-HD","ue_name":"河道工程","section":"施工七标"},{"ue_code":"WCJH-7-PNLQ","ue_name":"规划平内路桥工程","section":"施工七标"},{"ue_code":"WCJH-7-ZDLQ","ue_name":"温榆河左堤路桥工程","section":"施工七标"},{"ue_code":"WCJH-7-GQFHZ","ue_name":"葛渠分洪闸工程","section":"施工七标"},{"ue_code":"WCJH-7-YTDS","ue_name":"1#余土堆山工程","section":"施工七标"},{"ue_code":"WCJH-LHB-HD","ue_name":"河道工程","section":"穿六环路标"},{"ue_code":"WCJH-LHB-WCJHQ","ue_name":"温潮减河大桥工程","section":"穿六环路标"}],"divisions":[{"code":"WCJH-1-HD-01","name":"河道、筑堤及护砌工程(12+500~12+900)","section":"施工一标","ue_code":"WCJH-1-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-1-HD-02","name":"河道、筑堤及护砌工程(12+900~13+921.39)","section":"施工一标","ue_code":"WCJH-1-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-1-HD-03","name":"穿堤建筑物工程","section":"施工一标","ue_code":"WCJH-1-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-1-HD-04","name":"电气自动化及附属工程","section":"施工一标","ue_code":"WCJH-1-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-1-GBXHZ-01","name":"上游联结段","section":"施工一标","ue_code":"WCJH-1-GBXHZ","ue_name":"港北泄洪闸工程","is_main":false},{"code":"WCJH-1-GBXHZ-02","name":"地基基础与防渗","section":"施工一标","ue_code":"WCJH-1-GBXHZ","ue_name":"港北泄洪闸工程","is_main":false},{"code":"WCJH-1-GBXHZ-03","name":"闸室段","section":"施工一标","ue_code":"WCJH-1-GBXHZ","ue_name":"港北泄洪闸工程","is_main":true},{"code":"WCJH-1-GBXHZ-04","name":"消能防冲段","section":"施工一标","ue_code":"WCJH-1-GBXHZ","ue_name":"港北泄洪闸工程","is_main":false},{"code":"WCJH-1-GBXHZ-05","name":"下游联结段","section":"施工一标","ue_code":"WCJH-1-GBXHZ","ue_name":"港北泄洪闸工程","is_main":false},{"code":"WCJH-1-GBXHZ-06","name":"金属结构及启闭机安装","section":"施工一标","ue_code":"WCJH-1-GBXHZ","ue_name":"港北泄洪闸工程","is_main":false},{"code":"WCJH-1-GBXHZ-07","name":"管理房","section":"施工一标","ue_code":"WCJH-1-GBXHZ","ue_name":"港北泄洪闸工程","is_main":false},{"code":"WCJH-1-RGLQ-01","name":"地基与基础","section":"施工一标","ue_code":"WCJH-1-RGLQ","ue_name":"任港路桥工程","is_main":false},{"code":"WCJH-1-RGLQ-02","name":"下部结构","section":"施工一标","ue_code":"WCJH-1-RGLQ","ue_name":"任港路桥工程","is_main":false},{"code":"WCJH-1-RGLQ-03","name":"上部结构","section":"施工一标","ue_code":"WCJH-1-RGLQ","ue_name":"任港路桥工程","is_main":false},{"code":"WCJH-1-RGLQ-04","name":"桥面系","section":"施工一标","ue_code":"WCJH-1-RGLQ","ue_name":"任港路桥工程","is_main":false},{"code":"WCJH-1-RGLQ-05","name":"附属设施","section":"施工一标","ue_code":"WCJH-1-RGLQ","ue_name":"任港路桥工程","is_main":false},{"code":"WCJH-1-YDLQ-01","name":"地基与基础","section":"施工一标","ue_code":"WCJH-1-YDLQ","ue_name":"潮白河右堤路桥工程","is_main":false},{"code":"WCJH-1-YDLQ-02","name":"下部结构","section":"施工一标","ue_code":"WCJH-1-YDLQ","ue_name":"潮白河右堤路桥工程","is_main":false},{"code":"WCJH-1-YDLQ-03","name":"上部结构","section":"施工一标","ue_code":"WCJH-1-YDLQ","ue_name":"潮白河右堤路桥工程","is_main":false},{"code":"WCJH-1-YDLQ-04","name":"桥面系","section":"施工一标","ue_code":"WCJH-1-YDLQ","ue_name":"潮白河右堤路桥工程","is_main":false},{"code":"WCJH-1-YDLQ-05","name":"附属设施","section":"施工一标","ue_code":"WCJH-1-YDLQ","ue_name":"潮白河右堤路桥工程","is_main":false},{"code":"WCJH-2-HD-01","name":"河道、筑堤及护砌工程(11+000~11+600)","section":"施工二标","ue_code":"WCJH-2-HD","ue_name":"河道单位工程","is_main":false},{"code":"WCJH-2-HD-02","name":"河道、筑堤及护砌工程(11+600~11+900)","section":"施工二标","ue_code":"WCJH-2-HD","ue_name":"河道单位工程","is_main":false},{"code":"WCJH-2-HD-03","name":"河道、筑堤及护砌工程(11+900~12+500)","section":"施工二标","ue_code":"WCJH-2-HD","ue_name":"河道单位工程","is_main":false},{"code":"WCJH-2-HD-04","name":"电气及自动化工程","section":"施工二标","ue_code":"WCJH-2-HD","ue_name":"河道单位工程","is_main":false},{"code":"WCJH-2-PJTDQ-01","name":"基础及下部结构","section":"施工二标","ue_code":"WCJH-2-PJTDQ","ue_name":"平家疃东桥单位工程","is_main":false},{"code":"WCJH-2-PJTDQ-02","name":"上部及桥面系附属工程","section":"施工二标","ue_code":"WCJH-2-PJTDQ","ue_name":"平家疃东桥单位工程","is_main":false},{"code":"WCJH-2-PJTDQ-03","name":"防护、引道工程","section":"施工二标","ue_code":"WCJH-2-PJTDQ","ue_name":"平家疃东桥单位工程","is_main":false},{"code":"WCJH-2-YTDS-01","name":"余土堆山一区","section":"施工二标","ue_code":"WCJH-2-YTDS","ue_name":"余土堆山单位工程","is_main":false},{"code":"WCJH-2-YTDS-02","name":"余土堆山二区","section":"施工二标","ue_code":"WCJH-2-YTDS","ue_name":"余土堆山单位工程","is_main":false},{"code":"WCJH-2-YTDS-03","name":"余土堆山三区","section":"施工二标","ue_code":"WCJH-2-YTDS","ue_name":"余土堆山单位工程","is_main":false},{"code":"WCJH-2-YTDS-04","name":"余土堆山四区","section":"施工二标","ue_code":"WCJH-2-YTDS","ue_name":"余土堆山单位工程","is_main":false},{"code":"WCJH-2-YTDS-05","name":"排水沟","section":"施工二标","ue_code":"WCJH-2-YTDS","ue_name":"余土堆山单位工程","is_main":false},{"code":"WCJH-2-YTDS-06","name":"碎石路","section":"施工二标","ue_code":"WCJH-2-YTDS","ue_name":"余土堆山单位工程","is_main":false},{"code":"WCJH-3-HD-01","name":"河道、筑堤及护砌工程(8+000~9+000)","section":"施工三标","ue_code":"WCJH-3-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-3-HD-02","name":"河道、筑堤工程(9+000~10+000)","section":"施工三标","ue_code":"WCJH-3-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-3-HD-03","name":"河道、筑堤及护砌工程(10+000~11+000)","section":"施工三标","ue_code":"WCJH-3-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-3-HD-04","name":"穿堤构筑物工程","section":"施工三标","ue_code":"WCJH-3-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-3-HD-05","name":"电气及自动化工程","section":"施工三标","ue_code":"WCJH-3-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-3-YYHZ-01","name":"地基防渗","section":"施工三标","ue_code":"WCJH-3-YYHZ","ue_name":"月牙河节制闸工程","is_main":false},{"code":"WCJH-3-YYHZ-02","name":"上游联结段","section":"施工三标","ue_code":"WCJH-3-YYHZ","ue_name":"月牙河节制闸工程","is_main":false},{"code":"WCJH-3-YYHZ-03","name":"闸室段","section":"施工三标","ue_code":"WCJH-3-YYHZ","ue_name":"月牙河节制闸工程","is_main":true},{"code":"WCJH-3-YYHZ-04","name":"消能防冲段","section":"施工三标","ue_code":"WCJH-3-YYHZ","ue_name":"月牙河节制闸工程","is_main":false},{"code":"WCJH-3-YYHZ-05","name":"下游联结段","section":"施工三标","ue_code":"WCJH-3-YYHZ","ue_name":"月牙河节制闸工程","is_main":false},{"code":"WCJH-3-YYHZ-06","name":"巡河路桥工程","section":"施工三标","ue_code":"WCJH-3-YYHZ","ue_name":"月牙河节制闸工程","is_main":false},{"code":"WCJH-3-YYHZ-07","name":"金属结构及启闭机安装","section":"施工三标","ue_code":"WCJH-3-YYHZ","ue_name":"月牙河节制闸工程","is_main":false},{"code":"WCJH-3-YYHZ-08","name":"闸房","section":"施工三标","ue_code":"WCJH-3-YYHZ","ue_name":"月牙河节制闸工程","is_main":false},{"code":"WCJH-3-ZBHZ1-01","name":"地基防渗","section":"施工三标","ue_code":"WCJH-3-ZBHZ1","ue_name":"中坝河1#节制闸工程","is_main":false},{"code":"WCJH-3-ZBHZ1-02","name":"上游联结段","section":"施工三标","ue_code":"WCJH-3-ZBHZ1","ue_name":"中坝河1#节制闸工程","is_main":false},{"code":"WCJH-3-ZBHZ1-03","name":"闸室段","section":"施工三标","ue_code":"WCJH-3-ZBHZ1","ue_name":"中坝河1#节制闸工程","is_main":true},{"code":"WCJH-3-ZBHZ1-04","name":"消能防冲段","section":"施工三标","ue_code":"WCJH-3-ZBHZ1","ue_name":"中坝河1#节制闸工程","is_main":false},{"code":"WCJH-3-ZBHZ1-05","name":"下游联结段","section":"施工三标","ue_code":"WCJH-3-ZBHZ1","ue_name":"中坝河1#节制闸工程","is_main":false},{"code":"WCJH-3-ZBHZ1-06","name":"巡河路桥工程","section":"施工三标","ue_code":"WCJH-3-ZBHZ1","ue_name":"中坝河1#节制闸工程","is_main":false},{"code":"WCJH-3-ZBHZ1-07","name":"金属结构及启闭机安装","section":"施工三标","ue_code":"WCJH-3-ZBHZ1","ue_name":"中坝河1#节制闸工程","is_main":false},{"code":"WCJH-3-ZBHZ1-08","name":"闸房","section":"施工三标","ue_code":"WCJH-3-ZBHZ1","ue_name":"中坝河1#节制闸工程","is_main":false},{"code":"WCJH-3-ZBHZ2-01","name":"地基防渗","section":"施工三标","ue_code":"WCJH-3-ZBHZ2","ue_name":"中坝河2#节制闸工程","is_main":false},{"code":"WCJH-3-ZBHZ2-02","name":"上游联结段","section":"施工三标","ue_code":"WCJH-3-ZBHZ2","ue_name":"中坝河2#节制闸工程","is_main":false},{"code":"WCJH-3-ZBHZ2-03","name":"闸室段","section":"施工三标","ue_code":"WCJH-3-ZBHZ2","ue_name":"中坝河2#节制闸工程","is_main":true},{"code":"WCJH-3-ZBHZ2-04","name":"暗涵段","section":"施工三标","ue_code":"WCJH-3-ZBHZ2","ue_name":"中坝河2#节制闸工程","is_main":false},{"code":"WCJH-3-ZBHZ2-05","name":"下游联结段","section":"施工三标","ue_code":"WCJH-3-ZBHZ2","ue_name":"中坝河2#节制闸工程","is_main":false},{"code":"WCJH-3-ZBHZ2-06","name":"金属结构及启闭机安装","section":"施工三标","ue_code":"WCJH-3-ZBHZ2","ue_name":"中坝河2#节制闸工程","is_main":false},{"code":"WCJH-3-ZBHZ2-07","name":"电气及自动化工程","section":"施工三标","ue_code":"WCJH-3-ZBHZ2","ue_name":"中坝河2#节制闸工程","is_main":false},{"code":"WCJH-3-PJTQ-01","name":"地基与基础","section":"施工三标","ue_code":"WCJH-3-PJTQ","ue_name":"平家疃桥工程","is_main":false},{"code":"WCJH-3-PJTQ-02","name":"下部结构","section":"施工三标","ue_code":"WCJH-3-PJTQ","ue_name":"平家疃桥工程","is_main":false},{"code":"WCJH-3-PJTQ-03","name":"上部结构","section":"施工三标","ue_code":"WCJH-3-PJTQ","ue_name":"平家疃桥工程","is_main":false},{"code":"WCJH-3-PJTQ-04","name":"桥面系","section":"施工三标","ue_code":"WCJH-3-PJTQ","ue_name":"平家疃桥工程","is_main":false},{"code":"WCJH-3-PJTQ-05","name":"附属设施","section":"施工三标","ue_code":"WCJH-3-PJTQ","ue_name":"平家疃桥工程","is_main":false},{"code":"WCJH-3-PZLQ-01","name":"地基与基础","section":"施工三标","ue_code":"WCJH-3-PZLQ","ue_name":"平翟路桥工程","is_main":false},{"code":"WCJH-3-PZLQ-02","name":"下部结构","section":"施工三标","ue_code":"WCJH-3-PZLQ","ue_name":"平翟路桥工程","is_main":false},{"code":"WCJH-3-PZLQ-03","name":"上部结构","section":"施工三标","ue_code":"WCJH-3-PZLQ","ue_name":"平翟路桥工程","is_main":false},{"code":"WCJH-3-PZLQ-04","name":"桥面系","section":"施工三标","ue_code":"WCJH-3-PZLQ","ue_name":"平翟路桥工程","is_main":false},{"code":"WCJH-3-PZLQ-05","name":"附属设施","section":"施工三标","ue_code":"WCJH-3-PZLQ","ue_name":"平翟路桥工程","is_main":false},{"code":"WCJH-3-THLQ-01","name":"地基与基础","section":"施工三标","ue_code":"WCJH-3-THLQ","ue_name":"通怀路桥工程","is_main":false},{"code":"WCJH-3-THLQ-02","name":"下部结构","section":"施工三标","ue_code":"WCJH-3-THLQ","ue_name":"通怀路桥工程","is_main":false},{"code":"WCJH-3-THLQ-03","name":"上部结构","section":"施工三标","ue_code":"WCJH-3-THLQ","ue_name":"通怀路桥工程","is_main":false},{"code":"WCJH-3-THLQ-04","name":"桥面系","section":"施工三标","ue_code":"WCJH-3-THLQ","ue_name":"通怀路桥工程","is_main":false},{"code":"WCJH-3-THLQ-05","name":"附属设施","section":"施工三标","ue_code":"WCJH-3-THLQ","ue_name":"通怀路桥工程","is_main":false},{"code":"WCJH-4-HD-01","name":"河道、筑堤及护砌工程(5+774~6+019)","section":"施工四标","ue_code":"WCJH-4-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-4-HD-02","name":"河道、筑堤及护砌工程(6+260~7+250)","section":"施工四标","ue_code":"WCJH-4-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-4-HD-03","name":"河道、筑堤及护砌工程(7+250~8+000)","section":"施工四标","ue_code":"WCJH-4-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-4-HD-04","name":"电气及自动化工程","section":"施工四标","ue_code":"WCJH-4-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-4-HD-05","name":"附属工程","section":"施工四标","ue_code":"WCJH-4-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-4-XPLQ1-01","name":"地基与基础","section":"施工四标","ue_code":"WCJH-4-XPLQ1","ue_name":"徐平路1#桥工程","is_main":false},{"code":"WCJH-4-XPLQ1-02","name":"下部结构","section":"施工四标","ue_code":"WCJH-4-XPLQ1","ue_name":"徐平路1#桥工程","is_main":false},{"code":"WCJH-4-XPLQ1-03","name":"上部结构","section":"施工四标","ue_code":"WCJH-4-XPLQ1","ue_name":"徐平路1#桥工程","is_main":false},{"code":"WCJH-4-XPLQ1-04","name":"桥面系","section":"施工四标","ue_code":"WCJH-4-XPLQ1","ue_name":"徐平路1#桥工程","is_main":false},{"code":"WCJH-4-XPLQ1-05","name":"附属设施","section":"施工四标","ue_code":"WCJH-4-XPLQ1","ue_name":"徐平路1#桥工程","is_main":false},{"code":"WCJH-4-XPLQ2-01","name":"地基与基础","section":"施工四标","ue_code":"WCJH-4-XPLQ2","ue_name":"徐平路2#桥工程","is_main":false},{"code":"WCJH-4-XPLQ2-02","name":"下部结构","section":"施工四标","ue_code":"WCJH-4-XPLQ2","ue_name":"徐平路2#桥工程","is_main":false},{"code":"WCJH-4-XPLQ2-03","name":"上部结构","section":"施工四标","ue_code":"WCJH-4-XPLQ2","ue_name":"徐平路2#桥工程","is_main":false},{"code":"WCJH-4-XPLQ2-04","name":"桥面系","section":"施工四标","ue_code":"WCJH-4-XPLQ2","ue_name":"徐平路2#桥工程","is_main":false},{"code":"WCJH-4-XPLQ2-05","name":"附属设施","section":"施工四标","ue_code":"WCJH-4-XPLQ2","ue_name":"徐平路2#桥工程","is_main":false},{"code":"WCJH-5-HD-01","name":"河道、筑堤及护砌工程(3+050~4+000)","section":"施工五标","ue_code":"WCJH-5-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-5-HD-02","name":"河道、筑堤及护砌工程(4+000~5+000)","section":"施工五标","ue_code":"WCJH-5-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-5-HD-03","name":"河道、筑堤及护砌工程(5+000~5+400)","section":"施工五标","ue_code":"WCJH-5-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-5-HD-04","name":"穿堤构筑物工程","section":"施工五标","ue_code":"WCJH-5-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-5-HD-05","name":"电气及自动化工程","section":"施工五标","ue_code":"WCJH-5-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-5-JZZ-01","name":"上游联结段","section":"施工五标","ue_code":"WCJH-5-JZZ","ue_name":"小中河2#节制闸工程","is_main":false},{"code":"WCJH-5-JZZ-02","name":"地基防渗","section":"施工五标","ue_code":"WCJH-5-JZZ","ue_name":"小中河2#节制闸工程","is_main":false},{"code":"WCJH-5-JZZ-03","name":"闸室段","section":"施工五标","ue_code":"WCJH-5-JZZ","ue_name":"小中河2#节制闸工程","is_main":true},{"code":"WCJH-5-JZZ-04","name":"消能防冲段","section":"施工五标","ue_code":"WCJH-5-JZZ","ue_name":"小中河2#节制闸工程","is_main":false},{"code":"WCJH-5-JZZ-05","name":"下游联结段","section":"施工五标","ue_code":"WCJH-5-JZZ","ue_name":"小中河2#节制闸工程","is_main":false},{"code":"WCJH-5-JZZ-06","name":"交通桥","section":"施工五标","ue_code":"WCJH-5-JZZ","ue_name":"小中河2#节制闸工程","is_main":false},{"code":"WCJH-5-JZZ-07","name":"金属结构及启闭机安装","section":"施工五标","ue_code":"WCJH-5-JZZ","ue_name":"小中河2#节制闸工程","is_main":false},{"code":"WCJH-5-JZZ-08","name":"闸房","section":"施工五标","ue_code":"WCJH-5-JZZ","ue_name":"小中河2#节制闸工程","is_main":false},{"code":"WCJH-5-GYNMQ-01","name":"地基与基础","section":"施工五标","ue_code":"WCJH-5-GYNMQ","ue_name":"公园南门桥工程","is_main":false},{"code":"WCJH-5-GYNMQ-02","name":"下部结构","section":"施工五标","ue_code":"WCJH-5-GYNMQ","ue_name":"公园南门桥工程","is_main":false},{"code":"WCJH-5-GYNMQ-03","name":"上部结构","section":"施工五标","ue_code":"WCJH-5-GYNMQ","ue_name":"公园南门桥工程","is_main":false},{"code":"WCJH-5-GYNMQ-04","name":"桥面系","section":"施工五标","ue_code":"WCJH-5-GYNMQ","ue_name":"公园南门桥工程","is_main":false},{"code":"WCJH-5-GYNMQ-05","name":"附属设施","section":"施工五标","ue_code":"WCJH-5-GYNMQ","ue_name":"公园南门桥工程","is_main":false},{"code":"WCJH-5-TSLQ-01","name":"地基与基础","section":"施工五标","ue_code":"WCJH-5-TSLQ","ue_name":"通顺路桥工程","is_main":false},{"code":"WCJH-5-TSLQ-02","name":"下部结构","section":"施工五标","ue_code":"WCJH-5-TSLQ","ue_name":"通顺路桥工程","is_main":false},{"code":"WCJH-5-TSLQ-03","name":"上部结构","section":"施工五标","ue_code":"WCJH-5-TSLQ","ue_name":"通顺路桥工程","is_main":false},{"code":"WCJH-5-TSLQ-04","name":"桥面系","section":"施工五标","ue_code":"WCJH-5-TSLQ","ue_name":"通顺路桥工程","is_main":false},{"code":"WCJH-5-TSLQ-05","name":"附属设施","section":"施工五标","ue_code":"WCJH-5-TSLQ","ue_name":"通顺路桥工程","is_main":false},{"code":"WCJH-6-HD-01","name":"河道、筑堤及护砌工程(1+500~2+000)","section":"施工六标","ue_code":"WCJH-6-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-6-HD-02","name":"河道、筑堤及护砌工程(2+000~2+500)","section":"施工六标","ue_code":"WCJH-6-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-6-HD-03","name":"河道、筑堤及护砌工程(2+500~3+050)","section":"施工六标","ue_code":"WCJH-6-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-6-HD-04","name":"电气及自动化工程","section":"施工六标","ue_code":"WCJH-6-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-6-WD-01","name":"筑堤及护砌工程(XWD0+000~XWD1+432.5)","section":"施工六标","ue_code":"WCJH-6-WD","ue_name":"新建围堤工程","is_main":false},{"code":"WCJH-6-WD-02","name":"筑堤及护砌工程(BWD0+000~BWD1+898.477)","section":"施工六标","ue_code":"WCJH-6-WD","ue_name":"新建围堤工程","is_main":false},{"code":"WCJH-6-WD-03","name":"筑堤及护砌工程(DWD0+000~DWD1+200)","section":"施工六标","ue_code":"WCJH-6-WD","ue_name":"新建围堤工程","is_main":false},{"code":"WCJH-6-WD-04","name":"筑堤及护砌工程(DWD1+200~DWD1+975.8)","section":"施工六标","ue_code":"WCJH-6-WD","ue_name":"新建围堤工程","is_main":false},{"code":"WCJH-6-WD-05","name":"交通闸工程","section":"施工六标","ue_code":"WCJH-6-WD","ue_name":"新建围堤工程","is_main":false},{"code":"WCJH-6-HD-06","name":"穿堤构筑物","section":"施工六标","ue_code":"WCJH-6-WD","ue_name":"新建围堤工程","is_main":false},{"code":"WCJH-6-HD-07","name":"电气及自动化工程","section":"施工六标","ue_code":"WCJH-6-WD","ue_name":"新建围堤工程","is_main":false},{"code":"WCJH-6-BFLQ-01","name":"地基与基础","section":"施工六标","ue_code":"WCJH-6-BFLQ","ue_name":"壁富路桥工程","is_main":false},{"code":"WCJH-6-BFLQ-02","name":"下部结构","section":"施工六标","ue_code":"WCJH-6-BFLQ","ue_name":"壁富路桥工程","is_main":false},{"code":"WCJH-6-BFLQ-03","name":"上部结构","section":"施工六标","ue_code":"WCJH-6-BFLQ","ue_name":"壁富路桥工程","is_main":false},{"code":"WCJH-6-BFLQ-04","name":"桥面系","section":"施工六标","ue_code":"WCJH-6-BFLQ","ue_name":"壁富路桥工程","is_main":false},{"code":"WCJH-6-BFLQ-05","name":"附属设施","section":"施工六标","ue_code":"WCJH-6-BFLQ","ue_name":"壁富路桥工程","is_main":false},{"code":"WCJH-6-RXQ-01","name":"地基及下部结构","section":"施工六标","ue_code":"WCJH-6-RXQ","ue_name":"东郊森林公园人行桥工程","is_main":false},{"code":"WCJH-6-RXQ-02","name":"上部结构及桥面附属设施","section":"施工六标","ue_code":"WCJH-6-RXQ","ue_name":"东郊森林公园人行桥工程","is_main":false},{"code":"WCJH-6-RXQ-03","name":"防护工程","section":"施工六标","ue_code":"WCJH-6-RXQ","ue_name":"东郊森林公园人行桥工程","is_main":false},{"code":"WCJH-6-CXQ-01","name":"地基及下部结构","section":"施工六标","ue_code":"WCJH-6-CXQ","ue_name":"东郊森林公园车行桥工程","is_main":false},{"code":"WCJH-6-CXQ-02","name":"上部结构及桥面附属设施","section":"施工六标","ue_code":"WCJH-6-CXQ","ue_name":"东郊森林公园车行桥工程","is_main":false},{"code":"WCJH-6-CXQ-03","name":"防护工程","section":"施工六标","ue_code":"WCJH-6-CXQ","ue_name":"东郊森林公园车行桥工程","is_main":false},{"code":"WCJH-6-JZZ-01","name":"上游联结段","section":"施工六标","ue_code":"WCJH-6-JZZ","ue_name":"小中河1#节制闸工程","is_main":false},{"code":"WCJH-6-JZZ-02","name":"地基防渗","section":"施工六标","ue_code":"WCJH-6-JZZ","ue_name":"小中河1#节制闸工程","is_main":false},{"code":"WCJH-6-JZZ-03","name":"闸室段","section":"施工六标","ue_code":"WCJH-6-JZZ","ue_name":"小中河1#节制闸工程","is_main":true},{"code":"WCJH-6-JZZ-04","name":"消能防冲段及下游连接段","section":"施工六标","ue_code":"WCJH-6-JZZ","ue_name":"小中河1#节制闸工程","is_main":false},{"code":"WCJH-6-JZZ-05","name":"金属结构及启闭机安装","section":"施工六标","ue_code":"WCJH-6-JZZ","ue_name":"小中河1#节制闸工程","is_main":false},{"code":"WCJH-6-JZZ-06","name":"闸房","section":"施工六标","ue_code":"WCJH-6-JZZ","ue_name":"小中河1#节制闸工程","is_main":false},{"code":"WCJH-6-YTDS-01","name":"余土堆山一区","section":"施工六标","ue_code":"WCJH-6-YTDS","ue_name":"2#余土堆山工程","is_main":false},{"code":"WCJH-6-YTDS-02","name":"余土堆山二区","section":"施工六标","ue_code":"WCJH-6-YTDS","ue_name":"2#余土堆山工程","is_main":false},{"code":"WCJH-6-YTDS-03","name":"余土堆山三区","section":"施工六标","ue_code":"WCJH-6-YTDS","ue_name":"2#余土堆山工程","is_main":false},{"code":"WCJH-6-YTDS-04","name":"余土堆山四区","section":"施工六标","ue_code":"WCJH-6-YTDS","ue_name":"2#余土堆山工程","is_main":false},{"code":"WCJH-6-YTDS-05","name":"排水沟","section":"施工六标","ue_code":"WCJH-6-YTDS","ue_name":"2#余土堆山工程","is_main":false},{"code":"WCJH-7-HD-01","name":"河道、筑堤及护砌工程(-0+587.830~0+000)","section":"施工七标","ue_code":"WCJH-7-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-7-HD-02","name":"河道、筑堤及护砌工程(0+000~0+500)","section":"施工七标","ue_code":"WCJH-7-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-7-HD-03","name":"河道、筑堤及护砌工程(0+500~1+000)","section":"施工七标","ue_code":"WCJH-7-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-7-HD-04","name":"河道、筑堤及护砌工程(1+000~1+500)","section":"施工七标","ue_code":"WCJH-7-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-7-HD-05","name":"穿堤构筑物","section":"施工七标","ue_code":"WCJH-7-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-7-HD-06","name":"电气及自动化工程","section":"施工七标","ue_code":"WCJH-7-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-7-PNLQ-01","name":"地基与基础","section":"施工七标","ue_code":"WCJH-7-PNLQ","ue_name":"规划平内路桥工程","is_main":false},{"code":"WCJH-7-PNLQ-02","name":"下部结构","section":"施工七标","ue_code":"WCJH-7-PNLQ","ue_name":"规划平内路桥工程","is_main":false},{"code":"WCJH-7-PNLQ-03","name":"上部结构","section":"施工七标","ue_code":"WCJH-7-PNLQ","ue_name":"规划平内路桥工程","is_main":false},{"code":"WCJH-7-PNLQ-04","name":"桥面系","section":"施工七标","ue_code":"WCJH-7-PNLQ","ue_name":"规划平内路桥工程","is_main":false},{"code":"WCJH-7-PNLQ-05","name":"附属设施","section":"施工七标","ue_code":"WCJH-7-PNLQ","ue_name":"规划平内路桥工程","is_main":false},{"code":"WCJH-7-ZDLQ-01","name":"地基与基础","section":"施工七标","ue_code":"WCJH-7-ZDLQ","ue_name":"温榆河左堤路桥工程","is_main":false},{"code":"WCJH-7-ZDLQ-02","name":"下部结构","section":"施工七标","ue_code":"WCJH-7-ZDLQ","ue_name":"温榆河左堤路桥工程","is_main":false},{"code":"WCJH-7-ZDLQ-03","name":"上部结构","section":"施工七标","ue_code":"WCJH-7-ZDLQ","ue_name":"温榆河左堤路桥工程","is_main":false},{"code":"WCJH-7-ZDLQ-04","name":"桥面系","section":"施工七标","ue_code":"WCJH-7-ZDLQ","ue_name":"温榆河左堤路桥工程","is_main":false},{"code":"WCJH-7-ZDLQ-05","name":"附属设施","section":"施工七标","ue_code":"WCJH-7-ZDLQ","ue_name":"温榆河左堤路桥工程","is_main":false},{"code":"WCJH-7-GQFHZ-01","name":"地基处理及防渗","section":"施工七标","ue_code":"WCJH-7-GQFHZ","ue_name":"葛渠分洪闸工程","is_main":false},{"code":"WCJH-7-GQFHZ-02","name":"上游联结段","section":"施工七标","ue_code":"WCJH-7-GQFHZ","ue_name":"葛渠分洪闸工程","is_main":false},{"code":"WCJH-7-GQFHZ-03","name":"闸室段","section":"施工七标","ue_code":"WCJH-7-GQFHZ","ue_name":"葛渠分洪闸工程","is_main":true},{"code":"WCJH-7-GQFHZ-04","name":"消能防冲段","section":"施工七标","ue_code":"WCJH-7-GQFHZ","ue_name":"葛渠分洪闸工程","is_main":false},{"code":"WCJH-7-GQFHZ-05","name":"下游联结段","section":"施工七标","ue_code":"WCJH-7-GQFHZ","ue_name":"葛渠分洪闸工程","is_main":false},{"code":"WCJH-7-GQFHZ-06","name":"金属结构及启闭机安装","section":"施工七标","ue_code":"WCJH-7-GQFHZ","ue_name":"葛渠分洪闸工程","is_main":false},{"code":"WCJH-7-GQFHZ-07","name":"管理房","section":"施工七标","ue_code":"WCJH-7-GQFHZ","ue_name":"葛渠分洪闸工程","is_main":false},{"code":"WCJH-7-YTDS-01","name":"1#余土堆山一区","section":"施工七标","ue_code":"WCJH-7-YTDS","ue_name":"1#余土堆山工程","is_main":false},{"code":"WCJH-7-YTDS-02","name":"1#余土堆山二区","section":"施工七标","ue_code":"WCJH-7-YTDS","ue_name":"1#余土堆山工程","is_main":false},{"code":"WCJH-7-YTDS-03","name":"1#余土堆山三区","section":"施工七标","ue_code":"WCJH-7-YTDS","ue_name":"1#余土堆山工程","is_main":false},{"code":"WCJH-7-YTDS-04","name":"1#余土堆山四区","section":"施工七标","ue_code":"WCJH-7-YTDS","ue_name":"1#余土堆山工程","is_main":false},{"code":"WCJH-7-YTDS-05","name":"排水沟","section":"施工七标","ue_code":"WCJH-7-YTDS","ue_name":"1#余土堆山工程","is_main":false},{"code":"WCJH-7-YTDS-06","name":"碎石路","section":"施工七标","ue_code":"WCJH-7-YTDS","ue_name":"1#余土堆山工程","is_main":false},{"code":"WCJH-LHB-HD-01","name":"河道、筑堤及护砌工程(5+400~5+774)","section":"穿六环路标","ue_code":"WCJH-LHB-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-LHB-HD-02","name":"电气及自动化工程","section":"穿六环路标","ue_code":"WCJH-LHB-HD","ue_name":"河道工程","is_main":false},{"code":"WCJH-LHB-WCJHDQ-01","name":"地基与基础","section":"穿六环路标","ue_code":"WCJH-LHB-WCJHQ","ue_name":"温潮减河大桥工程","is_main":false},{"code":"WCJH-LHB-WCJHQ-02","name":"墩台","section":"穿六环路标","ue_code":"WCJH-LHB-WCJHQ","ue_name":"温潮减河大桥工程","is_main":false},{"code":"WCJH-LHB-WCJHQ-03","name":"盖梁","section":"穿六环路标","ue_code":"WCJH-LHB-WCJHQ","ue_name":"温潮减河大桥工程","is_main":false},{"code":"WCJH-LHB-WCJHQ-04","name":"支座","section":"穿六环路标","ue_code":"WCJH-LHB-WCJHQ","ue_name":"温潮减河大桥工程","is_main":false},{"code":"WCJH-LHB-WCJHQ-05","name":"桥跨承重结构","section":"穿六环路标","ue_code":"WCJH-LHB-WCJHQ","ue_name":"温潮减河大桥工程","is_main":false},{"code":"WCJH-LHB-WCJHQ-06","name":"桥面系","section":"穿六环路标","ue_code":"WCJH-LHB-WCJHQ","ue_name":"温潮减河大桥工程","is_main":false},{"code":"WCJH-LHB-WCJHQ-07","name":"附属结构","section":"穿六环路标","ue_code":"WCJH-LHB-WCJHQ","ue_name":"温潮减河大桥工程","is_main":false}]}
+};
+
+function buildDefaultStandards() {
+  return EMBED_DEFAULTS.standards;
+}
+
+async function fetchJSON(url, fallback) {
+  try {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('加载失败: ' + url);
+    return await r.json();
+  } catch (e) {
+    if (fallback !== undefined) return fallback; // file:// 下兜底
+    throw e;
+  }
+}
+
+async function loadConfig() {
+  // 从 IndexedDB 读配置，若空则从默认 JSON 加载（file:// 下用内嵌副本）
+  let [cats, stds, secs, ues, divs, signers, tests, sets] = await Promise.all([
+    DB.getAll('categories'), DB.getAll('standards'), DB.getAll('sections'),
+    DB.getAll('unit_engineerings'), DB.getAll('divisions'), DB.getAll('signers'),
+    DB.getAll('test_units'), DB.getAll('settings')
+  ]);
+
+  // 配置版本迁移：内置默认配置升级后（如新增检测类别），自动同步到已建库；检测记录/签字人/检测单位不动
+  const settingsMap = {};
+  sets.forEach(s => { settingsMap[s.k] = s.v; });
+  const embeddedVer = Number(EMBED_DEFAULTS.config_version || 1);
+  const storedVer = Number(settingsMap.config_version || 1);
+  const needUpgrade = storedVer < embeddedVer;
+
+  if (cats.length === 0 || needUpgrade) {
+    const def = await fetchJSON('assets/config/default-categories.json', EMBED_DEFAULTS.categories);
+    if (needUpgrade) await DB.clear('categories');
+    await DB.bulkPut('categories', def);
+    cats = def;
+  }
+  S.categories = cats;
+
+  if (stds.length === 0 || needUpgrade) {
+    const def = await fetchJSON('assets/config/default-standards.json', buildDefaultStandards());
+    if (needUpgrade) await DB.clear('standards');
+    await DB.bulkPut('standards', def);
+    stds = def;
+  }
+  S.standards = stds;
+
+  const specsDef = await fetchJSON('assets/config/default-specs.json', EMBED_DEFAULTS.specs);
+  S.specs = specsDef;
+
+  // 项目划分清单（标段 / 单位工程 / 分部工程）：为空或版本升级时从 default-project.json 装载
+  if (!secs.length || !ues.length || !divs.length || needUpgrade) {
+    const proj = await fetchJSON('assets/config/default-project.json', EMBED_DEFAULTS.project);
+    if (needUpgrade) {
+      await DB.clear('sections'); await DB.clear('unit_engineerings'); await DB.clear('divisions');
+    }
+    if ((!secs.length || needUpgrade) && proj.sections) { await DB.bulkPut('sections', proj.sections); secs = proj.sections; }
+    if ((!ues.length || needUpgrade) && proj.unit_engineerings) { await DB.bulkPut('unit_engineerings', proj.unit_engineerings); ues = proj.unit_engineerings; }
+    if ((!divs.length || needUpgrade) && proj.divisions) { await DB.bulkPut('divisions', proj.divisions); divs = proj.divisions; }
+  }
+  S.sections = secs;
+  S.unitEngineerings = ues;
+  S.divisions = divs;
+  S.signers = { construction: [], supervision: [] };
+  signers.forEach(s => { if (S.signers[s.role]) S.signers[s.role].push(s); });
+  S.testUnits = tests;
+  S.settings = settingsMap;
+
+  if (needUpgrade) {
+    settingsMap.config_version = String(embeddedVer);
+    await DB.put('settings', { k: 'config_version', v: String(embeddedVer) });
+  }
+
+  S.records = await DB.getAll('records');
+}
+
+// ========================= 判定逻辑 =========================
+function getCategory(key) { return S.categories.find(c => c.key === key); }
+function getStandard(categoryKey, spec) {
+  return S.standards.find(s => s.category_key === categoryKey && (s.spec === spec || s.spec === '*'));
+}
+
+function judgeRecord(rec) {
+  const cat = getCategory(rec.category);
+  if (!cat) return '合格';
+  const std = getStandard(rec.category, rec.spec);
+  if (!std) return '合格'; // 无标准则不自动判定
+  const f = rec.category_fields || {};
+  if (cat.key === 'concrete_compressive') {
+    // 单组判定：代表值 >= 0.95*fcu_k 且单组 >= 0.85*fcu_k（非统计法单组标准）
+    const fcuK = std.fcu_k;
+    const rep = Number(f.representative_value_mpa || f.strength_mpa);
+    const str = Number(f.strength_mpa);
+    if (isNaN(rep) && isNaN(str)) return '合格';
+    const val = isNaN(rep) ? str : rep;
+    return val >= 0.95 * fcuK && str >= 0.85 * fcuK ? '合格' : '不合格';
+  }
+  if (cat.key === 'rebar_tensile') {
+    const y = Number(f.yield_strength_mpa), t = Number(f.tensile_strength_mpa), e = Number(f.elongation_percent);
+    const cb = f.cold_bend;
+    if (isNaN(y) || isNaN(t) || isNaN(e)) return '合格';
+    const ok = y >= (std.yield_min || 0) && t >= (std.tensile_min || 0) && e >= (std.elongation_min || 0) &&
+               (!std.cold_bend_required || cb === '合格');
+    return ok ? '合格' : '不合格';
+  }
+  if (cat.key === 'rebar_welded_joint') {
+    const t = Number(f.tensile_strength_mpa);
+    const loc = f.fracture_location, form = f.fracture_form;
+    // 弯曲性能（闪光对焊/气压焊需做弯曲试验，JGJ 18）：填"不合格"直接判不合格
+    if (f.bend_performance === '不合格') return '不合格';
+    if (isNaN(t)) return '合格';
+    // 母材牌号对应抗拉下限
+    const baseStd = getStandard('rebar_tensile', f.grade);
+    const tmin = baseStd ? baseStd.tensile_min : 540;
+    const locPass = (std.fracture_location_pass || ['母材']).includes(loc);
+    const formPass = (std.fracture_form_pass || ['延性']).includes(form);
+    return t >= tmin && locPass && formPass ? '合格' : '不合格';
+  }
+  if (cat.key === 'mortar_compressive') {
+    const fcuK = Number(String(rec.spec).replace(/[^\d.]/g, '')) || 0;
+    const rep = Number(f.representative_value_mpa || f.strength_mpa);
+    const str = Number(f.strength_mpa);
+    if (!fcuK || (isNaN(rep) && isNaN(str))) return '合格';
+    const val = isNaN(rep) ? str : rep;
+    return val >= fcuK && str >= 0.75 * fcuK ? '合格' : '不合格';
+  }
+  if (cat.key === 'concrete_flexural') {
+    const d = Number(rec.spec), s = Number(f.flexural_strength_mpa);
+    if (isNaN(d) || isNaN(s)) return '合格';
+    return s >= d ? '合格' : '不合格';
+  }
+  if (cat.key === 'concrete_impermeability') {
+    const d = Number(String(rec.spec).replace(/[^\d]/g, ''));
+    const m = Number(String(f.measured_grade || '').replace(/[^\d]/g, ''));
+    if (!d || !m) return '合格';
+    return m >= d ? '合格' : '不合格';
+  }
+  if (cat.key === 'concrete_frost') {
+    const d = Number(String(rec.spec).replace(/[^\d]/g, ''));
+    const c = Number(f.freeze_cycles);
+    if (!d || isNaN(c)) return '合格';
+    const rd = f.relative_dynamic_modulus;
+    const okRdm = (rd === undefined || rd === '' || isNaN(Number(rd))) ? true : Number(rd) >= 60;
+    return c >= d && okRdm ? '合格' : '不合格';
+  }
+  if (cat.key === 'compaction_degree') {
+    const d = Number(rec.spec), p = Number(f.compaction_percent);
+    if (isNaN(d) || isNaN(p)) return '合格';
+    return p >= d ? '合格' : '不合格';
+  }
+  if (cat.key === 'rebar_mech_joint') {
+    const t = Number(f.tensile_strength_mpa);
+    if (isNaN(t)) return '合格';
+    const baseStd = getStandard('rebar_tensile', f.grade);
+    const tmin = baseStd ? baseStd.tensile_min : 540;
+    return t >= tmin ? '合格' : '不合格';
+  }
+  if (cat.key === 'prestress_strand') {
+    const t = Number(f.tensile_strength_mpa);
+    if (isNaN(t)) return '合格';
+    return t >= (std.tensile_min || 1860) ? '合格' : '不合格';
+  }
+  if (cat.key === 'pile_integrity') {
+    const c = String(f.integrity_category || '');
+    if (!c) return '合格';
+    return (std.pass_categories || ['I', 'II']).map(String).includes(c) ? '合格' : '不合格';
+  }
+  if (cat.key === 'cement_material') {
+    if (f.soundness === '不合格') return '不合格';
+    const c = Number(f.compressive_28d_mpa);
+    if (isNaN(c) || !std.compressive_28d_min) return '合格';
+    return c >= std.compressive_28d_min ? '合格' : '不合格';
+  }
+  return '合格';
+}
+
+// ========================= Tab 切换与渲染 =========================
+function renderTabs() {
+  const el = document.getElementById('tabs');
+  el.innerHTML = TABS.map(t => `<div class="tab ${S.tab === t.key ? 'active' : ''}" onclick="switchTab('${t.key}')">${t.label}</div>`).join('');
+}
+function switchTab(key) {
+  S.tab = key;
+  S.ledgerPage = 1;
+  renderTabs();
+  renderContent();
+}
+function renderContent() {
+  const c = document.getElementById('content');
+  switch (S.tab) {
+    case 'dashboard': c.innerHTML = renderDashboard(); break;
+    case 'upload': c.innerHTML = renderUpload(); bindUpload(); break;
+    case 'ledger': c.innerHTML = renderLedger(); bindLedger(); break;
+    case 'sections': c.innerHTML = renderSectionMgmt(); bindSectionMgmt(); break;
+    case 'categories': c.innerHTML = renderCategoryMgmt(); break;
+    case 'standards': c.innerHTML = renderStandardsMgmt(); bindStandardsMgmt(); break;
+    case 'settings': c.innerHTML = renderSettings(); bindSettings(); break;
+  }
+  updateProjectInfo();
+}
+function updateProjectInfo() {
+  const pn = S.settings.project_name || '';
+  const op = S.settings.operator_name || '';
+  document.getElementById('projectInfo').textContent =
+    '单机版 · 离线运行 · 数据存储于本机浏览器 IndexedDB' +
+    (pn ? '  |  工程：' + pn : '') + (op ? '  |  录入员：' + op : '');
+}
+
+// ========================= 看板 =========================
+function activeRecords() {
+  return S.records.filter(r => !r.is_deleted);
+}
+function computeMatrix() {
+  const recs = activeRecords();
+  const sectionSet = new Set(recs.map(r => r.section));
+  const catSet = new Set(recs.map(r => r.category));
+  const sections = S.sections.length ? S.sections.map(s => s.code) : [...sectionSet].sort();
+  const cats = S.categories.map(c => c.key).filter(k => catSet.has(k));
+  const matrix = {};
+  for (const sec of sections) {
+    matrix[sec] = {};
+    for (const cat of cats) {
+      const list = recs.filter(r => r.section === sec && r.category === cat);
+      const total = list.length;
+      const pass = list.filter(r => r.judgment === '合格').length;
+      const fail = total - pass;
+      matrix[sec][cat] = { total, pass, fail, rate: total ? pass / total : null };
+    }
+  }
+  return { sections, cats, matrix };
+}
+function renderDashboard() {
+  const recs = activeRecords();
+  const total = recs.length;
+  const pass = recs.filter(r => r.judgment === '合格').length;
+  const fail = total - pass;
+  const rate = total ? pass / total : 0;
+  const failRecs = recs.filter(r => r.judgment === '不合格');
+
+  // 最大不合格率标段
+  const bySec = {};
+  recs.forEach(r => {
+    if (!bySec[r.section]) bySec[r.section] = { t: 0, f: 0 };
+    bySec[r.section].t++;
+    if (r.judgment === '不合格') bySec[r.section].f++;
+  });
+  let worstSec = null, worstRate = -1;
+  for (const [sec, v] of Object.entries(bySec)) {
+    if (v.t > 0) { const rt = v.f / v.t; if (rt > worstRate) { worstRate = rt; worstSec = sec; } }
+  }
+
+  const { sections, cats, matrix } = computeMatrix();
+
+  let html = `
+  <div class="stat-cards">
+    <div class="stat-card"><div class="num">${total}</div><div class="lbl">总试件数</div></div>
+    <div class="stat-card"><div class="num">${fmtPct(rate)}</div><div class="lbl">总合格率</div></div>
+    <div class="stat-card danger"><div class="num">${fail}</div><div class="lbl">不合格总数</div></div>
+    <div class="stat-card ${worstRate > 0 ? 'warn' : ''}"><div class="num">${worstSec ? worstSec + ' (' + fmtPct(worstRate) + ')' : '—'}</div><div class="lbl">最大不合格率标段</div></div>
+  </div>
+  <div class="card">
+    <h2>标段 × 检测类别 合格率矩阵</h2>
+    <table class="matrix">
+      <thead><tr><th>标段 \\ 类别</th>${cats.map(k => `<th>${getCategory(k)?.name || k}</th>`).join('')}<th>合计</th></tr></thead>
+      <tbody>`;
+  for (const sec of sections) {
+    let tSum = 0, fSum = 0;
+    html += `<tr><th>${sec}</th>`;
+    for (const cat of cats) {
+      const m = matrix[sec][cat];
+      tSum += m.total; fSum += m.fail;
+      if (m.total === 0) html += `<td class="zero">—</td>`;
+      else {
+        const cls = m.fail > 0 ? 'bad' : 'ok';
+        html += `<td class="${cls}">${fmtPct(m.rate)}<br><span class="muted">${m.pass}/${m.total} · 不合格${m.fail}</span></td>`;
+      }
+    }
+    const sumRate = tSum ? (tSum - fSum) / tSum : null;
+    html += `<td class="${fSum > 0 ? 'bad' : 'ok'}"><b>${fmtPct(sumRate)}</b><br><span class="muted">${tSum - fSum}/${tSum} · 不合格${fSum}</span></td></tr>`;
+  }
+  html += `</tbody></table></div>`;
+
+  // 按分部工程口径统计（仅统计已有检测记录的分部工程）
+  const byDiv = {};
+  recs.forEach(r => {
+    const key = r.division || '(未填写分部工程)';
+    if (!byDiv[key]) byDiv[key] = { t: 0, f: 0 };
+    byDiv[key].t++;
+    if (r.judgment === '不合格') byDiv[key].f++;
+  });
+  const divList = Object.entries(byDiv).sort((a, b) => (b[1].f / b[1].t - a[1].f / a[1].t) || (b[1].t - a[1].t));
+  if (divList.length) {
+    html += `<div class="card"><h2>按分部工程合格率（${divList.length} 个分部工程有检测记录）</h2>
+      <div style="overflow:auto;max-height:50vh"><table>
+      <thead><tr><th>分部工程</th><th>试件数</th><th>合格</th><th>不合格</th><th>合格率</th></tr></thead><tbody>`;
+    for (const [name, v] of divList) {
+      const cls = v.f > 0 ? 'bad' : '';
+      html += `<tr class="${cls}"><td>${name}</td><td>${v.t}</td><td>${v.t - v.f}</td><td>${v.f}</td><td>${fmtPct(v.t ? (v.t - v.f) / v.t : null)}</td></tr>`;
+    }
+    html += `</tbody></table></div></div>`;
+  }
+
+  html += `<div class="card"><h2>不合格清单（${failRecs.length} 条）</h2>`;
+  if (failRecs.length === 0) {
+    html += `<p class="muted">暂无不合格记录。</p>`;
+  } else {
+    html += `<table><thead><tr><th>标段</th><th>单位工程</th><th>部位</th><th>类别</th><th>规格</th><th>报告编号</th><th>试件编号</th><th>检测日期</th><th>判定</th></tr></thead><tbody>`;
+    failRecs.slice(0, 100).forEach(r => {
+      html += `<tr class="bad"><td>${r.section}</td><td>${r.unit_engineering}</td><td>${r.part}</td><td>${getCategory(r.category)?.name || r.category}</td><td>${r.spec}</td><td>${r.report_no}</td><td>${r.specimen_no}</td><td>${formatDate(r.test_date)}</td><td><span class="tag red">不合格</span></td></tr>`;
+    });
+    html += `</tbody></table>${failRecs.length > 100 ? '<p class="muted">仅显示前 100 条，请到「台账」Tab 按判定筛选查看全部。</p>' : ''}`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+// ========================= 上传 =========================
+function renderUpload() {
+  return `
+  <div class="card">
+    <h2>上传检测台账（Excel / Word）</h2>
+    <div class="tip">各标段负责人提交的台账文件（Excel 或 Word）经由此处导入系统。系统将自动解析、校验、去重，并按标段/类别归入台账。格式不符的行将被拒绝并生成错误清单。</div>
+    <div class="toolbar">
+      <button class="btn" onclick="downloadTemplate()">下载台账模板</button>
+      <select id="uploadCategory">
+        <option value="">自动识别类别（按 sheet 名 / 表题）</option>
+        ${S.categories.map(c => `<option value="${c.key}">${c.name}</option>`).join('')}
+      </select>
+      <input type="file" id="fileInput" accept=".xlsx,.xls,.docx,.doc" style="display:none">
+      <label style="margin-left:8px;font-weight:normal;white-space:nowrap">
+        <input type="checkbox" id="looseMode"> 见证台账宽松导入
+      </label>
+    </div>
+    <div class="muted" style="margin:-2px 0 10px 2px">系统会自动识别见证台账（表头含「试验编号/试验项目/代表部位/试验结果」等）并宽松导入，无需手动勾选。有「试验编号」的行视为已有依据、直接入库；仅无试验编号的行标记为「待补录」。也可勾选下方选项强制宽松。</div>
+    <div class="dropzone" id="dropzone">
+      <div style="font-size:18px">点击或拖拽台账文件到此处</div>
+      <div class="muted" style="margin-top:8px">支持 .xlsx / .xls / .docx（Word 新版）；旧版 .doc 请先在 Word 中另存为 .docx</div>
+    </div>
+    <div class="toolbar" style="margin-top:14px">
+      <button class="btn ghost sm" onclick="document.getElementById('uploadLog').innerHTML=''">清空日志</button>
+    </div>
+    <div class="log" id="uploadLog"></div>
+  </div>`;
+}
+
+function bindUpload() {
+  const dz = document.getElementById('dropzone');
+  const fi = document.getElementById('fileInput');
+  dz.onclick = () => fi.click();
+  dz.ondragover = (e) => { e.preventDefault(); dz.classList.add('drag'); };
+  dz.ondragleave = () => dz.classList.remove('drag');
+  dz.ondrop = (e) => { e.preventDefault(); dz.classList.remove('drag'); if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); };
+  fi.onchange = () => { if (fi.files[0]) handleFile(fi.files[0]); fi.value = ''; };
+}
+
+async function handleFile(file) {
+  log('开始处理文件: ' + file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)');
+  // 文件级去重
+  const buf = await file.arrayBuffer();
+  const hash = await sha256Buf(buf);
+  const existed = await DB.getFileHash(hash);
+  if (existed) {
+    log(`该文件已于 ${formatDate(existed.imported_at)} 导入过，跳过。`, 'warn');
+    return;
+  }
+  // 解析为若干数据集 { name, rows }；Excel 按 sheet，Word 按表格
+  const ext = (file.name.split('.').pop() || '').toLowerCase();
+  let datasets = [];
+  try {
+    if (ext === 'xlsx' || ext === 'xls' || ext === 'xlsm') {
+      const wb = XLSX.read(buf, { type: 'array', cellDates: true });
+      for (const sheetName of wb.SheetNames) {
+        if (sheetName === '填写说明') continue;
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { defval: '', raw: false });
+        datasets.push({ name: sheetName, rows });
+      }
+    } else if (ext === 'docx') {
+      datasets = await readDocxTables(buf);
+    } else if (ext === 'doc') {
+      log('暂不支持旧版 .doc（二进制）格式的自动解析，请在 Word 中「另存为 .docx」后重新上传。', 'err');
+      return;
+    } else {
+      log('不支持的文件类型：.' + ext + '，请上传 .xlsx / .xls / .docx 文件。', 'err');
+      return;
+    }
+  } catch (e) {
+    log('解析失败: ' + e.message, 'err');
+    return;
+  }
+  if (!datasets.length) { log('未从文件中解析到可用的表格数据。', 'warn'); return; }
+
+  const forcedCat = document.getElementById('uploadCategory')?.value || '';
+  const manualLoose = !!document.getElementById('looseMode')?.checked;
+
+  // 将解析出的表格逐行归类、校验，返回 { valid, errors }
+  const processDatasets = (loose) => {
+    const allValid = [], allErrors = [];
+    for (const ds of datasets) {
+      // 过滤仅「序号」有值的预留空行（Word/Excel 见证台账常见）
+      const dataItems = ds.rows
+        .map((row, idx) => ({ row, idx }))
+        .filter(x => !isEmptyDataRow(x.row));
+      // 归类优先级：手动指定 > 表题/sheet 名识别 > 行级识别（见证台账一张表内混多种试验项目）
+      let groups = [];
+      if (forcedCat) {
+        groups = [[forcedCat, dataItems]];
+      } else {
+        const titleKey = matchCategoryBySheet(ds.name);
+        if (titleKey) {
+          groups = [[titleKey, dataItems]];
+        } else {
+          const m = new Map();
+          dataItems.forEach(({ row, idx }) => {
+            const k = detectCategoryByRow(row, ds.name);
+            if (!k) return;
+            if (!m.has(k)) m.set(k, []);
+            m.get(k).push({ row, idx });
+          });
+          groups = [...m.entries()];
+          if (!groups.length) {
+            const cols = Object.keys(ds.rows[0] || {}).slice(0, 12).join(' / ');
+            log(`跳过「${ds.name}」：无法识别类别；检测到的表头 = ${cols || '(空)'}；可用上方下拉框手动指定类别`, 'warn');
+            continue;
+          }
+          const recognized = groups.reduce((a, g) => a + g[1].length, 0);
+          const skipped = dataItems.length - recognized;
+          log(`「${ds.name}」表题未匹配类别，按每行“试验项目”识别为：${groups.map(([k]) => getCategory(k)?.name || k).join('、')}；共识别 ${recognized} 行${skipped ? `，${skipped} 行无法识别已跳过` : ''}`, 'warn');
+        }
+      }
+      for (const [catKey, items] of groups) {
+        const cat = getCategory(catKey);
+        if (!cat) { log(`跳过「${ds.name}」：类别 ${catKey} 未配置`, 'warn'); continue; }
+        if (forcedCat || matchCategoryBySheet(ds.name) === catKey) log(`「${ds.name}」→ ${cat.name}，共 ${items.length} 行`);
+        for (const { row, idx } of items) {
+          const rec = mapRowToRecord(row, cat, file.name);
+          if (loose) rec.import_mode = 'witness_loose';
+          const errs = validateRecord(rec, cat, loose);
+          if (errs.length) {
+            allErrors.push({ sheet: ds.name, row: idx + 2, ...rec, errors: errs });
+          } else {
+            // 源数据已带判定（如见证台账“试验结果”）则沿用，否则按标准自动判定
+            rec.judgment = rec.judgment || judgeRecord(rec);
+            allValid.push(rec);
+          }
+        }
+      }
+    }
+    return { valid: allValid, errors: allErrors };
+  };
+
+  // 宽松导入自动判定：见证台账表头含「试验编号/试验项目/代表部位/试验结果」等标记时自动宽松，无需手动勾选
+  const isWitness = looksLikeWitnessLedger(datasets);
+  let loose = manualLoose || isWitness;
+  if (loose && !manualLoose) log('检测到见证台账表头，已自动启用宽松导入（标段/单位工程/分部工程/规格可先为空入库）', 'warn');
+  else if (manualLoose) log('已开启「见证台账宽松导入」', 'warn');
+
+  let { valid: allValid, errors: allErrors } = processDatasets(loose);
+
+  // 兜底降级：标准校验下无任何有效记录时，自动用宽松模式重试（兼容任意格式）
+  if (!loose && allValid.length === 0 && allErrors.length > 0) {
+    log('标准校验下无有效记录，已自动切换为「见证台账宽松导入」模式重试', 'warn');
+    loose = true;
+    ({ valid: allValid, errors: allErrors } = processDatasets(true));
+  }
+
+  // 记录级去重：仅当报告编号或试件编号非空时去重（宽松导入的空编号“待补录”行各自保留）
+  const finalValid = [];
+  const seen = new Set();
+  S.records.forEach(r => { if (!r.is_deleted && (r.report_no || r.specimen_no)) seen.add(`${r.report_no}|${r.specimen_no}`); });
+  for (const rec of allValid) {
+    if (rec.report_no || rec.specimen_no) {
+      const k = `${rec.report_no}|${rec.specimen_no}`;
+      if (seen.has(k)) { allErrors.push({ ...rec, errors: ['报告编号+试件编号 已存在，重复导入'] }); continue; }
+      seen.add(k);
+    }
+    finalValid.push(rec);
+  }
+
+  // 写入
+  if (finalValid.length) {
+    try {
+      await DB.bulkPut('records', finalValid);
+      await DB.putFileHash(hash, file.name);
+      S.records = await DB.getAll('records');
+    } catch (e) {
+      log('写入数据库失败：' + ((e && e.message) || e), 'err');
+      return;
+    }
+  }
+  log(`导入完成：有效 ${finalValid.length} 条，错误 ${allErrors.length} 条`, finalValid.length ? 'ok' : 'warn');
+  if (allErrors.length) {
+    log(`生成错误清单`, 'warn');
+    downloadErrorList(allErrors, file.name);
+  }
+}
+
+// 类别关键词别名（用于 sheet 名 / Word 表题 的模糊识别）
+const CATEGORY_KEYWORDS = {
+  concrete_compressive: ['混凝土抗压', '抗压强度'],
+  rebar_tensile: ['钢筋原材', '钢筋拉伸'],
+  rebar_welded_joint: ['焊接接头', '钢筋焊接'],
+  mortar_compressive: ['砂浆'],
+  concrete_flexural: ['抗折', '弯拉'],
+  concrete_impermeability: ['抗渗'],
+  concrete_frost: ['抗冻', '冻融'],
+  compaction_degree: ['压实度', '压实', '原位密度', '干密度', '回填'],
+  rebar_mech_joint: ['机械连接', '直螺纹', '套筒'],
+  prestress_strand: ['钢绞线', '预应力'],
+  pile_integrity: ['桩身', '桩基', '完整性'],
+  cement_material: ['水泥']
+};
+
+function matchCategoryBySheet(name) {
+  const n = (name || '').replace(/\s/g, '');
+  if (!n) return null;
+  // 1) 先按类别名称精确/包含匹配，避免宽泛关键词误判（如"混凝土抗折"被"混凝土"抢走）
+  for (const c of S.categories) if (n === c.name || n.includes(c.name)) return c.key;
+  // 2) 再按关键词别名匹配
+  for (const c of S.categories) {
+    const kws = CATEGORY_KEYWORDS[c.key] || [];
+    if (kws.some(k => n.includes(k))) return c.key;
+  }
+  return null;
+}
+
+// 行级识别：见证台账一张表内可能混多种试验项目，按每行「试验项目 / 材料名称」内容判类别
+// 顺序敏感：先具体后宽泛（如钢绞线→机械连接→焊接→钢筋；抗折/抗渗/抗冻→砂浆→混凝土）
+const ROW_CATEGORY_HINTS = [
+  ['prestress_strand', ['钢绞线', '预应力']],
+  ['rebar_mech_joint', ['机械连接', '直螺纹', '套筒']],
+  ['rebar_welded_joint', ['焊接']],
+  ['rebar_tensile', ['钢筋', 'HRB', 'HPB', '热轧']],
+  ['concrete_flexural', ['抗折', '弯拉']],
+  ['concrete_impermeability', ['抗渗']],
+  ['concrete_frost', ['抗冻', '冻融']],
+  ['mortar_compressive', ['砂浆']],
+  ['pile_integrity', ['桩身', '桩基', '低应变', '声波透射', '完整性']],
+  ['cement_material', ['水泥']],
+  ['compaction_degree', ['原位密度', '灌砂', '环刀', '击实', '压实', '干密度', '回填']],
+  ['concrete_compressive', ['砼', '混凝土', '抗压', '试块']]
+];
+
+function detectCategoryByText(t) {
+  const n = (t || '').replace(/\s/g, '');
+  for (const [key, kws] of ROW_CATEGORY_HINTS) {
+    if (S.categories.some(c => c.key === key) && kws.some(k => n.includes(k))) return key;
+  }
+  return null;
+}
+
+function detectCategoryByRow(row, tableName) {
+  const keys = Object.keys(row);
+  const findCol = (...cands) => {
+    for (const c of cands) { const k = keys.find(k => k.includes(c)); if (k && row[k]) return row[k]; }
+    return '';
+  };
+  const text = [
+    tableName,
+    findCol('试验项目', '检测项目', '项目类别'),
+    findCol('材料名称', '试件（材料）名称', '试件(材料)名称', '名称'),
+    findCol('检测依据', '依据')
+  ].join(' ');
+  return detectCategoryByText(text);
+}
+
+// ---------- Word(.docx) 解析：读取 word/document.xml 中的表格 ----------
+async function readDocxTables(buf) {
+  const files = await unzipEntries(buf, (n) => n === 'word/document.xml');
+  const docBytes = files['word/document.xml'];
+  if (!docBytes) throw new Error('未在 Word 文档中找到正文（word/document.xml）');
+  const xml = new TextDecoder('utf-8').decode(docBytes);
+  const doc = new DOMParser().parseFromString(xml, 'application/xml');
+  if (doc.getElementsByTagName('parsererror').length) throw new Error('Word 正文解析失败');
+  const body = firstByLocal(doc, 'body') || doc.documentElement;
+  const datasets = [];
+  let title = '';
+  for (const node of Array.from(body.childNodes)) {
+    if (node.nodeType !== 1) continue;
+    if (node.localName === 'p') {
+      const t = collectWordText(node).trim();
+      if (t) title = t;
+    } else if (node.localName === 'tbl') {
+      const matrix = [];
+      for (const tr of Array.from(node.childNodes)) {
+        if (tr.nodeType !== 1 || tr.localName !== 'tr') continue;
+        const cells = [];
+        for (const tc of Array.from(tr.childNodes)) {
+          if (tc.nodeType !== 1 || tc.localName !== 'tc') continue;
+          cells.push(collectWordText(tc).trim());
+        }
+        matrix.push(cells);
+      }
+      const rows = matrixToRecords(matrix);
+      if (rows.length) datasets.push({ name: title || ('表格' + (datasets.length + 1)), rows });
+    }
+  }
+  return datasets;
+}
+
+function collectWordText(el) {
+  let s = '';
+  for (const n of el.getElementsByTagName('*')) {
+    if (n.localName === 't') s += n.textContent;
+  }
+  return s;
+}
+
+function firstByLocal(root, name) {
+  for (const n of root.getElementsByTagName('*')) if (n.localName === name) return n;
+  return null;
+}
+
+// 空白行判定：除「序号」外没有任何内容（见证台账常预留大量带序号的空行）
+function isEmptyDataRow(row) {
+  return Object.entries(row).every(([k, v]) => k === '序号' || String(v ?? '').trim() === '');
+}
+
+// 见证台账表头识别：含「试验编号/试验项目/代表部位/试验结果」等标记列时视为见证台账，自动宽松导入
+function looksLikeWitnessLedger(datasets) {
+  const marks = ['试验编号', '试验项目', '代表部位', '试验结果', '土料分析'];
+  return datasets.some(ds => {
+    const keys = Object.keys(ds.rows[0] || {});
+    return marks.some(mk => keys.includes(mk));
+  });
+}
+
+// 是否「待补录」：仅见证台账宽松导入、且没有「试验编号」(report_no) 的行才需补录。
+// 有试验编号即代表已有依据，标段/单位工程/分部工程/规格等可留空，不再标记待补录。
+function isNeedComplete(r) {
+  return r.import_mode === 'witness_loose' && !r.report_no;
+}
+
+// 表格矩阵（首行为表头）→ 记录数组，供 mapRowToRecord 复用
+function matrixToRecords(matrix) {
+  if (!matrix.length) return [];
+  const header = matrix[0].map(h => String(h || '').replace(/\s+/g, '').trim());
+  const rows = [];
+  for (let i = 1; i < matrix.length; i++) {
+    const r = matrix[i];
+    // 整行为空、或仅「序号」列有值（预留空行）则跳过
+    if (!r.some((c, j) => header[j] !== '序号' && String(c || '').trim() !== '')) continue;
+    const obj = {};
+    header.forEach((h, j) => { if (h) obj[h] = r[j] !== undefined ? String(r[j]).trim() : ''; });
+    rows.push(obj);
+  }
+  return rows;
+}
+
+// ---------- 最小 ZIP 解包（.docx 即 ZIP），仅解压指定条目 ----------
+async function unzipEntries(buf, want) {
+  const u8 = new Uint8Array(buf);
+  const dv = new DataView(buf);
+  const n = u8.length;
+  let eocd = -1;
+  const minPos = Math.max(0, n - 22 - 65535);
+  for (let i = n - 22; i >= minPos; i--) {
+    if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  }
+  if (eocd < 0) throw new Error('不是有效的 .docx 文件（未找到 ZIP 结束记录）');
+  const count = dv.getUint16(eocd + 10, true);
+  let p = dv.getUint32(eocd + 16, true);
+  const out = {};
+  for (let k = 0; k < count && p + 46 <= n; k++) {
+    if (dv.getUint32(p, true) !== 0x02014b50) break;
+    const method = dv.getUint16(p + 10, true);
+    const compSize = dv.getUint32(p + 20, true);
+    const nameLen = dv.getUint16(p + 28, true);
+    const extraLen = dv.getUint16(p + 30, true);
+    const commentLen = dv.getUint16(p + 32, true);
+    const localOffset = dv.getUint32(p + 42, true);
+    const name = new TextDecoder('utf-8').decode(u8.subarray(p + 46, p + 46 + nameLen));
+    p += 46 + nameLen + extraLen + commentLen;
+    if (!want(name)) continue;
+    if (localOffset + 30 > n || dv.getUint32(localOffset, true) !== 0x04034b50) continue;
+    const lNameLen = dv.getUint16(localOffset + 26, true);
+    const lExtraLen = dv.getUint16(localOffset + 28, true);
+    const dataStart = localOffset + 30 + lNameLen + lExtraLen;
+    const comp = u8.subarray(dataStart, dataStart + compSize);
+    out[name] = method === 0 ? comp : await inflateRaw(comp);
+  }
+  return out;
+}
+
+async function inflateRaw(bytes) {
+  if (typeof DecompressionStream === 'undefined') throw new Error('当前浏览器不支持解压 .docx，请升级到较新版 Chrome / Edge');
+  const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+  const ab = await new Response(stream).arrayBuffer();
+  return new Uint8Array(ab);
+}
+
+const HEADER_MAP = {
+  'report_no': ['报告编号', '报告号', '试验编号', '委托编号'],
+  'specimen_no': ['试件编号', '样品编号'],
+  'test_date': ['检测日期', '试验日期'],
+  'section': ['标段'],
+  'unit_engineering': ['单位工程', '单位工程名称'],
+  'division': ['分部工程', '分部工程名称', '分部'],
+  'part': ['部位', '代表部位', '工程部位'],
+  'spec': ['规格', '规格型号', '强度等级', '设计强度等级'],
+  'representative_batch': ['代表批量', '代表数量', '组数'],
+  'test_unit': ['检测单位', '试验单位'],
+  'construction_signer': ['施工签字', '施工单位签字', '施工签字人'],
+  'construction_sign_date': ['施工签字日期', '施工签字时间'],
+  'supervision_signer': ['监理签字', '监理单位签字', '监理签字人'],
+  'supervision_sign_date': ['监理签字日期', '监理签字时间'],
+  'judgment': ['判定', '判定结果', '结论', '试验结果'],
+  'remark': ['备注', '土料分析']
+};
+
+function pickField(row, key) {
+  const aliases = HEADER_MAP[key] || [];
+  for (const a of aliases) { if (row[a] !== undefined && row[a] !== '') return row[a]; }
+  // 模糊匹配
+  const keys = Object.keys(row);
+  for (const a of aliases) {
+    const k = keys.find(k => k.includes(a));
+    if (k && row[k] !== undefined && row[k] !== '') return row[k];
+  }
+  return undefined;
+}
+
+function pickCategoryField(row, f) {
+  // 精确匹配 label → 包含匹配 label/别名（兼容模板表头带 * 后缀及旧版列名）
+  if (row[f.label] !== undefined && row[f.label] !== '') return row[f.label];
+  const keys = Object.keys(row);
+  const cands = [f.label, ...(f.aliases || [])];
+  for (const c of cands) {
+    const k = keys.find(k => k.includes(c));
+    if (k !== undefined && row[k] !== undefined && row[k] !== '') return row[k];
+  }
+  if (row[f.key] !== undefined && row[f.key] !== '') return row[f.key];
+  return undefined;
+}
+
+function mapRowToRecord(row, cat, sourceFile) {
+  const cf = {};
+  for (const f of cat.fields) {
+    const v = pickField(row, f.key) || pickCategoryField(row, f);
+    if (v !== undefined && v !== '') {
+      cf[f.key] = f.type === 'number' ? Number(v) : v;
+    }
+  }
+  // 源数据判定（模板“判定”列 / 见证台账“试验结果”列）：规范化为 合格/不合格/空
+  const rawJudge = String(pickField(row, 'judgment') || '').trim();
+  let judgment = '';
+  if (rawJudge.includes('不合格')) judgment = '不合格';
+  else if (rawJudge.includes('合格')) judgment = '合格';
+  const now = Date.now();
+  return {
+    record_id: uuid(),
+    report_no: String(pickField(row, 'report_no') || '').trim(),
+    specimen_no: String(pickField(row, 'specimen_no') || '').trim(),
+    test_date: pickField(row, 'test_date') || '',
+    section: String(pickField(row, 'section') || '').trim(),
+    unit_engineering: String(pickField(row, 'unit_engineering') || '').trim(),
+    division: String(pickField(row, 'division') || '').trim(),
+    part: String(pickField(row, 'part') || '').trim(),
+    category: cat.key,
+    spec: String(pickField(row, 'spec') || '').trim(),
+    representative_batch: Number(pickField(row, 'representative_batch')) || 0,
+    test_unit: String(pickField(row, 'test_unit') || '').trim(),
+    construction_signer: String(pickField(row, 'construction_signer') || '').trim(),
+    construction_sign_date: pickField(row, 'construction_sign_date') || '',
+    supervision_signer: String(pickField(row, 'supervision_signer') || '').trim(),
+    supervision_sign_date: pickField(row, 'supervision_sign_date') || '',
+    judgment,
+    remark: String(pickField(row, 'remark') || '').trim(),
+    category_fields: cf,
+    is_deleted: false,
+    created_at: now,
+    updated_at: now,
+    source_file: sourceFile
+  };
+}
+
+function validateRecord(rec, cat, loose) {
+  const errs = [];
+  if (loose) {
+    // 见证台账宽松模式：编号/标段/分部/规格等均允许入库后补录；整行无任何可辨识信息才拒绝
+    if (!rec.report_no && !rec.specimen_no && !rec.part) errs.push('报告编号/试件编号/部位均为空');
+    return errs;
+  }
+  if (!rec.report_no) errs.push('报告编号为空');
+  if (!rec.specimen_no) errs.push('试件编号为空');
+  if (!rec.section) errs.push('标段为空');
+  if (S.sections.length && !S.sections.some(s => s.code === rec.section)) errs.push(`标段 "${rec.section}" 不在预定义清单`);
+  if (!rec.unit_engineering) errs.push('单位工程为空');
+  if (S.unitEngineerings.length && !S.unitEngineerings.some(u => u.ue_code === rec.unit_engineering || u.ue_name === rec.unit_engineering)) {
+    // 单位工程允许自由填，这里只警告不拒绝 —— 改为不报错
+  }
+  if (!rec.division) {
+    errs.push('分部工程为空');
+  } else if (S.divisions.length) {
+    const ueDivs = S.divisions.filter(d => d.ue_code === rec.unit_engineering || d.ue_name === rec.unit_engineering);
+    if (ueDivs.length && !ueDivs.some(d => d.name === rec.division)) {
+      errs.push(`分部工程 "${rec.division}" 不在单位工程 "${rec.unit_engineering}" 的项目划分清单`);
+    }
+  }
+  if (!rec.spec) errs.push('规格为空');
+  const specEnum = S.specs[cat.spec_enum_key] || [];
+  if (specEnum.length && !specEnum.includes(rec.spec)) errs.push(`规格 "${rec.spec}" 不在 ${cat.name} 规格枚举`);
+  if (!rec.test_date) errs.push('检测日期为空');
+  for (const f of cat.fields) {
+    if (f.required && (rec.category_fields[f.key] === undefined || rec.category_fields[f.key] === '')) {
+      errs.push(`类别字段 "${f.label}" 为空`);
+    }
+  }
+  return errs;
+}
+
+function downloadErrorList(errors, sourceFile) {
+  const data = errors.map(e => ({
+    '来源Sheet': e.sheet || '',
+    'Excel行号': e.row || '',
+    '报告编号': e.report_no,
+    '试件编号': e.specimen_no,
+    '标段': e.section,
+    '单位工程': e.unit_engineering,
+    '分部工程': e.division,
+    '部位': e.part,
+    '类别': getCategory(e.category)?.name || e.category,
+    '规格': e.spec,
+    '检测日期': formatDate(e.test_date),
+    '错误原因': (e.errors || []).join('；')
+  }));
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '错误清单');
+  const out = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
+  const fname = '错误清单_' + sourceFile.replace(/\.(xlsx?|docx?)$/i, '') + '_' + todayStr() + '.xlsx';
+  downloadBlob(new Blob([out], { type: 'application/octet-stream' }), fname);
+}
+
+// ========================= 台账 =========================
+function renderLedger() {
+  const recs = activeRecords();
+  const f = S.ledgerFilters;
+  let list = recs;
+  if (f.section) list = list.filter(r => r.section === f.section);
+  if (f.division) list = list.filter(r => r.division === f.division);
+  if (f.category) list = list.filter(r => r.category === f.category);
+  if (f.judgment) list = list.filter(r => r.judgment === f.judgment);
+  if (f.needComplete) list = list.filter(isNeedComplete);
+  if (f.keyword) {
+    const k = f.keyword.toLowerCase();
+    list = list.filter(r => (r.report_no + r.specimen_no + (r.division || '') + r.part + r.remark).toLowerCase().includes(k));
+  }
+  const total = list.length;
+  const pages = Math.max(1, Math.ceil(total / S.pageSize));
+  if (S.ledgerPage > pages) S.ledgerPage = pages;
+  const start = (S.ledgerPage - 1) * S.pageSize;
+  const pageList = list.slice(start, start + S.pageSize);
+
+  const sectionOpts = S.sections.map(s => s.code);
+  const catOpts = S.categories;
+
+  let html = `<div class="card"><h2>检测记录台账（共 ${total} 条）</h2>
+    <div class="toolbar">
+      <label>标段</label>
+      <select id="fSection" onchange="applyFilter('section',this.value)">
+        <option value="">全部</option>${[...new Set(recs.map(r => r.section))].sort().map(s => `<option ${f.section === s ? 'selected' : ''}>${s}</option>`).join('')}
+      </select>
+      <label>分部工程</label>
+      <select id="fDivision" onchange="applyFilter('division',this.value)">
+        <option value="">全部</option>${[...new Set(recs.map(r => r.division).filter(Boolean))].sort().map(s => `<option ${f.division === s ? 'selected' : ''}>${s}</option>`).join('')}
+      </select>
+      <label>类别</label>
+      <select id="fCategory" onchange="applyFilter('category',this.value)">
+        <option value="">全部</option>${catOpts.map(c => `<option value="${c.key}" ${f.category === c.key ? 'selected' : ''}>${c.name}</option>`).join('')}
+      </select>
+      <label>判定</label>
+      <select id="fJudgment" onchange="applyFilter('judgment',this.value)">
+        <option value="">全部</option><option ${f.judgment === '合格' ? 'selected' : ''}>合格</option><option ${f.judgment === '不合格' ? 'selected' : ''}>不合格</option>
+      </select>
+      <input id="fKeyword" placeholder="报告/试件/分部/部位/备注 关键词" value="${f.keyword || ''}" onchange="applyFilter('keyword',this.value)">
+      <label style="font-weight:normal;white-space:nowrap"><input type="checkbox" ${f.needComplete ? 'checked' : ''} onchange="applyFilter('needComplete',this.checked)"> 仅看待补录</label>
+      <button class="btn ghost sm" onclick="S.ledgerFilters={};S.ledgerPage=1;renderContent()">重置</button>
+      <span style="margin-left:auto" class="muted">双击单元格可编辑 · 判定列不可编辑（自动判定）</span>
+    </div>
+    <div style="overflow:auto;max-height:65vh"><table>
+    <thead><tr>
+      <th>标段</th><th>单位工程</th><th>分部工程</th><th>部位</th><th>类别</th><th>规格</th>
+      <th>报告编号</th><th>试件编号</th><th>检测日期</th><th>类别字段</th>
+      <th>判定</th><th>施工签字</th><th>监理签字</th><th>操作</th>
+    </tr></thead><tbody>`;
+
+  for (const r of pageList) {
+    const cat = getCategory(r.category);
+    const cf = r.category_fields || {};
+    const cfText = cat ? cat.fields.map(fd => fd.label + ':' + (cf[fd.key] ?? '')).join(' ｜ ') : '';
+    const cls = r.judgment === '不合格' ? 'bad' : '';
+    const needComplete = isNeedComplete(r);
+    html += `<tr class="${cls}" data-id="${r.record_id}">
+      <td class="editable" data-field="section">${r.section}</td>
+      <td class="editable" data-field="unit_engineering">${r.unit_engineering}</td>
+      <td class="editable" data-field="division">${r.division || ''}</td>
+      <td class="editable" data-field="part">${r.part}</td>
+      <td>${cat?.name || r.category}${needComplete ? ' <span class="tag" title="见证台账宽松导入，无试验编号，需补录编号">待补录</span>' : ''}</td>
+      <td class="editable" data-field="spec">${r.spec}</td>
+      <td class="editable" data-field="report_no">${r.report_no}</td>
+      <td class="editable" data-field="specimen_no">${r.specimen_no}</td>
+      <td class="editable" data-field="test_date">${formatDate(r.test_date)}</td>
+      <td><span class="muted" title="${cfText}">${cfText.length > 40 ? cfText.slice(0, 40) + '…' : cfText}</span></td>
+      <td>${r.judgment === '不合格' ? '<span class="tag red">不合格</span>' : '<span class="tag green">合格</span>'}</td>
+      <td class="editable" data-field="construction_signer">${r.construction_signer}</td>
+      <td class="editable" data-field="supervision_signer">${r.supervision_signer}</td>
+      <td><button class="btn danger sm" onclick="softDeleteRec('${r.record_id}')">删除</button></td>
+    </tr>`;
+  }
+  html += `</tbody></table></div>`;
+  // 分页
+  html += `<div class="pagination">
+    <button ${S.ledgerPage === 1 ? 'disabled' : ''} onclick="S.ledgerPage--;renderContent()">上一页</button>
+    <span>第 ${S.ledgerPage} / ${pages} 页</span>
+    <button ${S.ledgerPage === pages ? 'disabled' : ''} onclick="S.ledgerPage++;renderContent()">下一页</button>
+  </div></div>`;
+
+  // 显示已删除（软删恢复）
+  const deleted = S.records.filter(r => r.is_deleted);
+  if (deleted.length) {
+    html += `<div class="card"><h2>已删除记录（${deleted.length} 条，可恢复）</h2>
+      <table><thead><tr><th>标段</th><th>报告编号</th><th>试件编号</th><th>判定</th><th>操作</th></tr></thead><tbody>`;
+    for (const r of deleted) {
+      html += `<tr class="deleted"><td>${r.section}</td><td>${r.report_no}</td><td>${r.specimen_no}</td><td>${r.judgment}</td>
+        <td><button class="btn sm" onclick="restoreRec('${r.record_id}')">恢复</button></td></tr>`;
+    }
+    html += `</tbody></table></div>`;
+  }
+  return html;
+}
+
+function bindLedger() {
+  document.querySelectorAll('td.editable').forEach(td => {
+    td.ondblclick = () => {
+      const id = td.closest('tr').dataset.id;
+      const field = td.dataset.field;
+      const rec = S.records.find(r => r.record_id === id);
+      if (!rec) return;
+      const old = rec[field] || '';
+      td.contentEditable = 'true';
+      td.focus();
+      // 选中内容
+      const range = document.createRange();
+      range.selectNodeContents(td);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      const finish = async (save) => {
+        td.contentEditable = 'false';
+        if (save) {
+          const v = td.textContent.trim();
+          if (v !== old) {
+            rec[field] = v;
+            rec.updated_at = Date.now();
+            if (field === 'spec' || field === 'category') rec.judgment = judgeRecord(rec);
+            await DB.put('records', rec);
+            S.records = await DB.getAll('records');
+          }
+        } else {
+          td.textContent = old;
+        }
+        renderContent();
+      };
+      td.onblur = () => finish(true);
+      td.onkeydown = (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); td.blur(); }
+        if (e.key === 'Escape') { td.textContent = old; td.blur(); finish(false); }
+      };
+    };
+  });
+}
+
+function applyFilter(k, v) {
+  S.ledgerFilters[k] = v;
+  S.ledgerPage = 1;
+  renderContent();
+}
+async function softDeleteRec(id) {
+  const rec = S.records.find(r => r.record_id === id);
+  if (!rec) return;
+  if (!confirm('确认删除该条记录？可在底部「已删除记录」中恢复。')) return;
+  rec.is_deleted = true;
+  rec.updated_at = Date.now();
+  await DB.put('records', rec);
+  S.records = await DB.getAll('records');
+  renderContent();
+}
+async function restoreRec(id) {
+  const rec = S.records.find(r => r.record_id === id);
+  if (!rec) return;
+  rec.is_deleted = false;
+  rec.updated_at = Date.now();
+  await DB.put('records', rec);
+  S.records = await DB.getAll('records');
+  renderContent();
+}
+
+// ========================= 标段单位工程管理 =========================
+function renderSectionMgmt() {
+  let html = `<div class="card"><h2>标段管理</h2>
+    <div class="row">
+      <button class="btn" onclick="reloadDefaultProject()">重新加载项目划分清单</button>
+      <span class="muted">当前清单：${S.sections.length} 标段 · ${S.unitEngineerings.length} 单位工程 · ${S.divisions.length} 分部工程（默认来源 assets/config/default-project.json）</span>
+    </div>
+    <div class="row">
+      <input id="secCode" placeholder="标段编码（如 标段01）">
+      <input id="secName" placeholder="标段名称（可选）">
+      <button class="btn" onclick="addSection()">添加标段</button>
+    </div>
+    <table><thead><tr><th>标段编码</th><th>标段名称</th><th>操作</th></tr></thead><tbody>`;
+  for (const s of S.sections) {
+    html += `<tr><td>${s.code}</td><td>${s.name || ''}</td><td><button class="btn danger sm" onclick="delSection('${s.code}')">删除</button></td></tr>`;
+  }
+  html += `</tbody></table></div>`;
+
+  html += `<div class="card"><h2>单位工程管理</h2>
+    <div class="row">
+      <select id="ueSection">${S.sections.map(s => `<option>${s.code}</option>`).join('')}</select>
+      <input id="ueCode" placeholder="单位工程编码（如 桥01）">
+      <input id="ueName" placeholder="单位工程名称（可选）">
+      <button class="btn" onclick="addUE()">添加单位工程</button>
+    </div>
+    <table><thead><tr><th>所属标段</th><th>单位工程编码</th><th>单位工程名称</th><th>操作</th></tr></thead><tbody>`;
+  for (const u of S.unitEngineerings) {
+    html += `<tr><td>${u.section}</td><td>${u.ue_code}</td><td>${u.ue_name || ''}</td><td><button class="btn danger sm" onclick="delUE('${u.ue_code}')">删除</button></td></tr>`;
+  }
+  html += `</tbody></table></div>`;
+
+  html += `<div class="card"><h2>分部工程清单（${S.divisions.length}）</h2>
+    <p class="muted">分部工程归属标段与单位工程，上传台账时「分部工程」须与清单名称完全一致。标 △ 的为主要分部工程。</p>
+    <div style="overflow:auto;max-height:60vh"><table><thead><tr><th>标段</th><th>单位工程</th><th>分部工程编码</th><th>分部工程名称</th><th>主要分部</th></tr></thead><tbody>`;
+  for (const d of S.divisions) {
+    html += `<tr><td>${d.section}</td><td>${d.ue_name || d.ue_code}</td><td><code>${d.code}</code></td><td>${d.is_main ? '△ ' : ''}${d.name}</td><td>${d.is_main ? '是' : ''}</td></tr>`;
+  }
+  html += `</tbody></table></div></div>`;
+  return html;
+}
+function bindSectionMgmt() {}
+async function addSection() {
+  const code = document.getElementById('secCode').value.trim();
+  const name = document.getElementById('secName').value.trim();
+  if (!code) return alert('标段编码不能为空');
+  if (S.sections.some(s => s.code === code)) return alert('标段编码已存在');
+  await DB.put('sections', { code, name });
+  S.sections = await DB.getAll('sections');
+  renderContent();
+}
+async function delSection(code) {
+  if (!confirm('删除标段 ' + code + '？')) return;
+  await DB.delete('sections', code);
+  S.sections = await DB.getAll('sections');
+  renderContent();
+}
+async function addUE() {
+  const sec = document.getElementById('ueSection').value;
+  const code = document.getElementById('ueCode').value.trim();
+  const name = document.getElementById('ueName').value.trim();
+  if (!code) return alert('单位工程编码不能为空');
+  await DB.put('unit_engineerings', { ue_code: code, ue_name: name, section: sec });
+  S.unitEngineerings = await DB.getAll('unit_engineerings');
+  renderContent();
+}
+async function delUE(code) {
+  if (!confirm('删除单位工程 ' + code + '？')) return;
+  await DB.delete('unit_engineerings', code);
+  S.unitEngineerings = await DB.getAll('unit_engineerings');
+  renderContent();
+}
+async function reloadDefaultProject() {
+  if (!confirm('从 assets/config/default-project.json 重新加载标段 / 单位工程 / 分部工程清单？\n将覆盖当前清单，已有检测记录不受影响。')) return;
+  await DB.clear('sections');
+  await DB.clear('unit_engineerings');
+  await DB.clear('divisions');
+  const proj = await fetchJSON('assets/config/default-project.json', EMBED_DEFAULTS.project);
+  await DB.bulkPut('sections', proj.sections || []);
+  await DB.bulkPut('unit_engineerings', proj.unit_engineerings || []);
+  await DB.bulkPut('divisions', proj.divisions || []);
+  await loadConfig();
+  renderContent();
+  alert('项目划分清单已重新加载');
+}
+
+// ========================= 类别管理 =========================
+function renderCategoryMgmt() {
+  let html = `<div class="card"><h2>检测项目类别</h2>
+    <p class="muted">默认标准依据《水利工程建设质量检测管理规范》DB11/T 3032-2022（北京市地方标准）附录F。类别由 <code>assets/config/default-categories.json</code> 定义，新增类别需编辑该 JSON 文件后重载配置。</p>
+    <div class="row"><button class="btn" onclick="reloadDefaultConfig()">重新加载默认类别/标准配置</button>
+      <span class="muted">已有检测记录不受影响；用于配置 JSON 更新后同步到本机数据库</span></div>
+    <table><thead><tr><th>类别编码</th><th>名称</th><th>引用规范</th><th>依据</th><th>规格枚举</th><th>字段</th></tr></thead><tbody>`;
+  for (const c of S.categories) {
+    const specEnum = S.specs[c.spec_enum_key] || [];
+    html += `<tr><td><code>${c.key}</code></td><td>${c.name}</td><td>${c.standard_ref}</td><td>${c.source || ''}</td>
+      <td>${specEnum.map(s => `<span class="tag">${s}</span>`).join('')}</td>
+      <td>${c.fields.map(f => f.label + (f.required ? '*' : '')).join('，')}</td></tr>`;
+  }
+  html += `</tbody></table>`;
+  for (const c of S.categories) {
+    if (c.note) html += `<p class="muted" style="margin-top:8px"><b>${c.name}：</b>${c.note}</p>`;
+  }
+  html += `</div>`;
+
+  html += `<div class="card"><h2>规格枚举</h2><table><thead><tr><th>枚举键</th><th>值</th></tr></thead><tbody>`;
+  for (const [k, v] of Object.entries(S.specs)) {
+    html += `<tr><td><code>${k}</code></td><td>${v.map(x => `<span class="tag">${x}</span>`).join('')}</td></tr>`;
+  }
+  html += `</tbody></table><p class="muted" style="margin-top:8px">规格枚举由 <code>assets/config/default-specs.json</code> 定义。</p></div>`;
+  return html;
+}
+
+async function reloadDefaultConfig() {
+  if (!confirm('从 assets/config 重新加载类别与判定标准默认配置？\n已有检测记录不受影响。')) return;
+  await DB.clear('categories');
+  await DB.clear('standards');
+  const cats = await fetchJSON('assets/config/default-categories.json', EMBED_DEFAULTS.categories);
+  await DB.bulkPut('categories', cats);
+  const stds = await fetchJSON('assets/config/default-standards.json', buildDefaultStandards());
+  await DB.bulkPut('standards', stds);
+  S.categories = cats;
+  S.standards = stds;
+  S.settings = S.settings || {};
+  S.settings.config_version = String(EMBED_DEFAULTS.config_version || 1);
+  await DB.put('settings', { k: 'config_version', v: String(EMBED_DEFAULTS.config_version || 1) });
+  renderContent();
+  alert('默认配置已重新加载');
+}
+
+// ========================= 判定标准 =========================
+function renderStandardsMgmt() {
+  let html = `<div class="card"><h2>判定标准配置</h2>
+    <p class="muted">判定标准由 <code>assets/config/default-standards.json</code> 定义。可在下方修改限值，保存后即时生效。判定逻辑见代码 judgeRecord。</p>
+    <div class="row"><button class="btn" onclick="saveStandards()">保存修改</button>
+      <button class="btn ghost" onclick="resetStandards()">恢复默认</button></div>
+    <div style="overflow:auto;max-height:65vh"><table>
+    <thead><tr><th>类别</th><th>规格</th><th>限值/参数</th><th>引用规范</th><th>说明</th></tr></thead><tbody>`;
+  for (let i = 0; i < S.standards.length; i++) {
+    const s = S.standards[i];
+    const cat = getCategory(s.category_key);
+    const params = Object.entries(s).filter(([k]) => !['category_key', 'spec', 'standard_no', 'note', 'id'].includes(k))
+      .map(([k, v]) => `${k}=${v}`).join('；');
+    html += `<tr data-idx="${i}">
+      <td>${cat?.name || s.category_key}</td>
+      <td>${s.spec}</td>
+      <td contenteditable="true" class="editable" data-field="params">${params}</td>
+      <td contenteditable="true" class="editable" data-field="standard_no">${s.standard_no}</td>
+      <td contenteditable="true" class="editable" data-field="note">${s.note || ''}</td>
+    </tr>`;
+  }
+  html += `</tbody></table></div></div>`;
+  return html;
+}
+function bindStandardsMgmt() {}
+async function saveStandards() {
+  // 这里简化：标准修改需要编辑 JSON 文件重新加载，前端不直接改限值结构
+  // 实际限值判定在 judgeRecord 里，标准表仅作参考展示
+  alert('判定限值修改请编辑 assets/config/default-standards.json，然后刷新页面。\n当前表中限值仅作展示参考。');
+}
+async function resetStandards() {
+  if (!confirm('确认恢复默认判定标准？')) return;
+  await DB.clear('standards');
+  const def = await fetchJSON('assets/config/default-standards.json', buildDefaultStandards());
+  await DB.bulkPut('standards', def);
+  S.standards = def;
+  renderContent();
+}
+
+// ========================= 系统设置 =========================
+function renderSettings() {
+  const allSigners = [...S.signers.construction, ...S.signers.supervision];
+  let html = `<div class="card"><h2>基本信息</h2>
+    <div class="row"><label>工程名称</label><input id="setProjectName" value="${S.settings.project_name || ''}" style="width:300px">
+      <label>工程编号</label><input id="setProjectCode" value="${S.settings.project_code || ''}">
+      <button class="btn" onclick="saveSetting('project_name','setProjectName');saveSetting('project_code','setProjectCode')">保存</button>
+    </div>
+    <div class="row"><label>录入员姓名</label><input id="setOperator" value="${S.settings.operator_name || ''}">
+      <label>所属单位</label>
+      <select id="setUnit">
+        <option value="施工单位" ${S.settings.operator_unit === '施工单位' ? 'selected' : ''}>施工单位</option>
+        <option value="监理单位" ${S.settings.operator_unit === '监理单位' ? 'selected' : ''}>监理单位</option>
+        <option value="其他" ${S.settings.operator_unit === '其他' ? 'selected' : ''}>其他</option>
+      </select>
+      <button class="btn" onclick="saveSetting('operator_name','setOperator');saveSetting('operator_unit','setUnit')">保存</button>
+    </div></div>`;
+
+  html += `<div class="card"><h2>签字人清单</h2>
+    <div class="row"><label>角色</label>
+      <select id="signerRole"><option value="construction">施工单位</option><option value="supervision">监理单位</option></select>
+      <label>姓名</label><input id="signerName" placeholder="签字人姓名">
+      <button class="btn" onclick="addSigner()">添加</button>
+    </div>
+    <div class="row"><b>施工单位签字人：</b>${S.signers.construction.map(s => `<span class="tag" onclick="delSigner(${s.id})" style="cursor:pointer" title="点击删除">${s.name} ×</span>`).join('')}</div>
+    <div class="row"><b>监理单位签字人：</b>${S.signers.supervision.map(s => `<span class="tag" onclick="delSigner(${s.id})" style="cursor:pointer" title="点击删除">${s.name} ×</span>`).join('')}</div>
+  </div>`;
+
+  html += `<div class="card"><h2>检测单位清单</h2>
+    <div class="row"><input id="testUnitName" placeholder="检测单位名称">
+      <button class="btn" onclick="addTestUnit()">添加</button></div>
+    <div class="row">${S.testUnits.map(t => `<span class="tag" onclick="delTestUnit('${t.name}')" style="cursor:pointer" title="点击删除">${t.name} ×</span>`).join('')}</div>
+  </div>`;
+
+  html += `<div class="card"><h2>数据备份 / 恢复 / 月度快照</h2>
+    <div class="row">
+      <button class="btn" onclick="exportJsonBackup()">导出 JSON 全量备份</button>
+      <button class="btn warn" onclick="exportMonthlySnapshot()">生成月度台账快照</button>
+      <button class="btn" onclick="document.getElementById('restoreInput').click()">从 JSON 恢复</button>
+      <input type="file" id="restoreInput" accept=".json" style="display:none" onchange="importJsonBackup(this)">
+      <button class="btn danger" onclick="exportFullLedger()">导出全量台账 Excel</button>
+    </div>
+    <div class="row">
+      <button class="btn danger" onclick="clearAllData()">⚠ 清空所有数据</button>
+    </div>
+    <p class="muted">月度快照生成一个包含「汇总看板/本月新增/全量台账/不合格清单」4 个 sheet 的 Excel，并同步生成 JSON 备份。</p>
+  </div>`;
+
+  return html;
+}
+function bindSettings() {}
+async function saveSetting(k, inputId) {
+  const v = document.getElementById(inputId).value;
+  S.settings[k] = v;
+  await DB.put('settings', { k, v });
+  updateProjectInfo();
+}
+async function addSigner() {
+  const role = document.getElementById('signerRole').value;
+  const name = document.getElementById('signerName').value.trim();
+  if (!name) return;
+  await DB.put('signers', { name, role });
+  const signers = await DB.getAll('signers');
+  S.signers = { construction: [], supervision: [] };
+  signers.forEach(s => { if (S.signers[s.role]) S.signers[s.role].push(s); });
+  renderContent();
+}
+async function delSigner(id) {
+  await DB.delete('signers', id);
+  const signers = await DB.getAll('signers');
+  S.signers = { construction: [], supervision: [] };
+  signers.forEach(s => { if (S.signers[s.role]) S.signers[s.role].push(s); });
+  renderContent();
+}
+async function addTestUnit() {
+  const name = document.getElementById('testUnitName').value.trim();
+  if (!name) return;
+  await DB.put('test_units', { name });
+  S.testUnits = await DB.getAll('test_units');
+  renderContent();
+}
+async function delTestUnit(name) {
+  await DB.delete('test_units', name);
+  S.testUnits = await DB.getAll('test_units');
+  renderContent();
+}
+
+// ========================= 导出 =========================
+function exportJsonBackup() {
+  const backup = {
+    exported_at: new Date().toISOString(),
+    categories: S.categories,
+    standards: S.standards,
+    specs: S.specs,
+    sections: S.sections,
+    unit_engineerings: S.unitEngineerings,
+    divisions: S.divisions,
+    signers: [...S.signers.construction, ...S.signers.supervision],
+    test_units: S.testUnits,
+    settings: S.settings,
+    records: S.records
+  };
+  downloadJSON(backup, '台账数据备份_' + todayStr() + '.json');
+}
+async function importJsonBackup(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (!confirm('恢复将覆盖当前所有数据，确认继续？')) { input.value = ''; return; }
+  const text = await file.text();
+  const data = JSON.parse(text);
+  await Promise.all([
+    DB.clear('records'), DB.clear('categories'), DB.clear('standards'), DB.clear('sections'),
+    DB.clear('unit_engineerings'), DB.clear('divisions'), DB.clear('signers'), DB.clear('test_units'), DB.clear('settings')
+  ]);
+  if (data.records) await DB.bulkPut('records', data.records);
+  if (data.categories) await DB.bulkPut('categories', data.categories);
+  if (data.standards) await DB.bulkPut('standards', data.standards);
+  if (data.sections) await DB.bulkPut('sections', data.sections);
+  if (data.unit_engineerings) await DB.bulkPut('unit_engineerings', data.unit_engineerings);
+  if (data.divisions) await DB.bulkPut('divisions', data.divisions);
+  if (data.signers) await DB.bulkPut('signers', data.signers);
+  if (data.test_units) await DB.bulkPut('test_units', data.test_units);
+  if (data.settings) {
+    for (const [k, v] of Object.entries(data.settings)) await DB.put('settings', { k, v });
+  }
+  await loadConfig();
+  renderContent();
+  alert('恢复完成');
+  input.value = '';
+}
+
+function recordToRow(r) {
+  const cat = getCategory(r.category);
+  const cf = r.category_fields || {};
+  const row = {
+    '标段': r.section,
+    '单位工程': r.unit_engineering,
+    '分部工程': r.division,
+    '部位': r.part,
+    '检测项目类别': cat?.name || r.category,
+    '规格型号': r.spec,
+    '报告编号': r.report_no,
+    '试件编号': r.specimen_no,
+    '检测日期': formatDate(r.test_date),
+    '代表批量': r.representative_batch,
+    '检测单位': r.test_unit,
+    '施工单位签字人': r.construction_signer,
+    '施工单位签字日期': formatDate(r.construction_sign_date),
+    '监理单位签字人': r.supervision_signer,
+    '监理单位签字日期': formatDate(r.supervision_sign_date),
+    '判定结果': r.judgment,
+    '备注': r.remark,
+    '导入方式': r.import_mode === 'witness_loose'
+      ? (isNeedComplete(r) ? '见证台账(待补录)' : '见证台账(已识别)')
+      : '标准模板'
+  };
+  if (cat) cat.fields.forEach(f => { row[f.label] = cf[f.key] ?? ''; });
+  return row;
+}
+
+function exportFullLedger() {
+  const recs = activeRecords();
+  // 按类别分 sheet
+  const wb = XLSX.utils.book_new();
+  const cats = [...new Set(recs.map(r => r.category))];
+  for (const ck of cats) {
+    const list = recs.filter(r => r.category === ck).sort((a, b) => new Date(a.test_date) - new Date(b.test_date));
+    const cat = getCategory(ck);
+    const ws = XLSX.utils.json_to_sheet(list.map(recordToRow));
+    XLSX.utils.book_append_sheet(wb, ws, cat?.name || ck);
+  }
+  if (cats.length === 0) {
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([['暂无数据']]), '空');
+  }
+  const out = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
+  downloadBlob(new Blob([out], { type: 'application/octet-stream' }), '全标段质量检测统计台账_' + todayStr() + '.xlsx');
+}
+
+function exportMonthlySnapshot() {
+  const now = new Date();
+  const ym = now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0');
+  const recs = activeRecords();
+  const thisMonth = recs.filter(r => {
+    const d = new Date(r.test_date);
+    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+  });
+  const failRecs = recs.filter(r => r.judgment === '不合格');
+
+  const wb = XLSX.utils.book_new();
+
+  // Sheet 1: 汇总看板
+  const { sections, cats, matrix } = computeMatrix();
+  const header = ['标段 \\ 类别', ...cats.map(k => getCategory(k)?.name || k), '合计'];
+  const matrixRows = [header];
+  for (const sec of sections) {
+    const row = [sec];
+    let tSum = 0, fSum = 0;
+    for (const cat of cats) {
+      const m = matrix[sec][cat];
+      tSum += m.total; fSum += m.fail;
+      row.push(m.total ? `${fmtPct(m.rate)} (${m.pass}/${m.total}, 不合格${m.fail})` : '—');
+    }
+    row.push(tSum ? `${fmtPct((tSum - fSum) / tSum)} (${tSum - fSum}/${tSum}, 不合格${fSum})` : '—');
+    matrixRows.push(row);
+  }
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(matrixRows), '汇总看板');
+
+  // Sheet 2: 本月新增
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(thisMonth.map(recordToRow)), '本月新增');
+
+  // Sheet 3: 全量台账
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(recs.map(recordToRow)), '全量台账');
+
+  // Sheet 4: 不合格清单
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(failRecs.map(recordToRow)), '不合格清单');
+
+  const out = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
+  downloadBlob(new Blob([out], { type: 'application/octet-stream' }), `台账快照_${ym}.xlsx`);
+  // 同步 JSON 备份
+  exportJsonBackup();
+}
+
+async function clearAllData() {
+  if (!confirm('⚠ 确认清空所有台账数据？此操作不可恢复！')) return;
+  if (!confirm('再次确认：真的要清空所有记录吗？')) return;
+  await DB.clear('records');
+  await DB.clear('file_hashes');
+  S.records = [];
+  renderContent();
+}
+
+// ========================= 模板下载 =========================
+function downloadTemplate() {
+  const wb = XLSX.utils.book_new();
+  // 说明 sheet
+  const help = [
+    ['全标段质量检测统计台账 - 填写模板'],
+    [],
+    ['填写说明：'],
+    ['1. 每个检测项目类别一个 sheet，表头请勿修改（含通用字段+类别专属字段）'],
+    ['2. 必填项已用 * 标注，留空将被系统拒绝'],
+    ['3. 标段、单位工程、分部工程必须与系统「标段单位工程」Tab 的项目划分清单一致（系统已内置温潮减河工程 8 标段/35 单位工程/186 分部工程）'],
+    ['4. 规格必须在系统「类别管理」中的规格枚举内'],
+    ['5. 报告编号+试件编号 必须唯一，重复导入将被拒绝'],
+    ['6. 施工/监理签字日期请填写实际签字日期（不默认今天）'],
+    ['7. 判定结果由系统自动判定，无需填写（填写也会被覆盖）'],
+    [],
+    ['通用字段：报告编号*、试件编号*、检测日期*、标段*、单位工程*、分部工程*、部位、规格型号*、代表批量、检测单位、施工单位签字人、施工单位签字日期、监理单位签字人、监理单位签字日期、备注'],
+    [],
+    ['分部工程填写：须与项目划分清单中的名称完全一致（如「闸室段」「河道、筑堤及护砌工程(12+500~12+900)」），可在「标段单位工程」Tab 查询。'],
+  ];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(help), '填写说明');
+
+  for (const cat of S.categories) {
+    const headers = ['报告编号*', '试件编号*', '检测日期*', '标段*', '单位工程*', '分部工程*', '部位', '规格型号*', '代表批量', '检测单位', '施工单位签字人', '施工单位签字日期', '监理单位签字人', '监理单位签字日期', '备注'];
+    cat.fields.forEach(f => headers.push(f.label + (f.required ? '*' : '')));
+    headers.push('判定结果(自动)');
+    // 示例行
+    const specExample = ({
+      concrete_compressive: 'C30', rebar_tensile: 'HRB400', rebar_welded_joint: '电弧焊',
+      mortar_compressive: 'M10', concrete_flexural: '4.5', concrete_impermeability: 'W6',
+      concrete_frost: 'F100', compaction_degree: '95', rebar_mech_joint: 'HRB400',
+      prestress_strand: 'φs15.2', pile_integrity: '1000', cement_material: 'P.O 42.5'
+    })[cat.key] || '';
+    const example = ['例：BG2024-001', '例：S001', '2024-01-15', '施工一标', 'WCJH-1-GBXHZ', '闸室段', '0号墩', specExample];
+    while (example.length < headers.length - 1) example.push('');
+    example.push('（自动）');
+    const ws = XLSX.utils.aoa_to_sheet([headers, example]);
+    XLSX.utils.book_append_sheet(wb, ws, cat.name);
+  }
+  const out = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
+  downloadBlob(new Blob([out], { type: 'application/octet-stream' }), '质量检测台账模板_v1.0.xlsx');
+}
+
+// ========================= 初始化 =========================
+async function init() {
+  try {
+    await DB.open();
+    await loadConfig();
+    renderTabs();
+    renderContent();
+  } catch (e) {
+    document.getElementById('content').innerHTML = `<div class="card" style="color:#dc2626"><h2>初始化失败</h2><pre>${e.stack || e.message}</pre></div>`;
+    console.error(e);
+  }
+}
+init();
+</script>
+</body>
+</html>

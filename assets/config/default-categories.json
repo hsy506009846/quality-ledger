@@ -1,0 +1,490 @@
+[
+  {
+    "key": "concrete_compressive",
+    "name": "混凝土抗压强度",
+    "description": "混凝土立方体抗压强度检测（水工混凝土）",
+    "spec_enum_key": "concrete_strength",
+    "standard_ref": "SL/T 352 / GB/T 50081",
+    "source": "DB11/T 3032-2022 表F.58",
+    "note": "检测频次按 SL 677：大体积混凝土每500m³成型一组，结构混凝土每100m³成型一组，不足上述量者也成型一组；强度评定按 SL 176 及 GB/T 50107 执行。",
+    "fields": [
+      {
+        "key": "age_days",
+        "label": "龄期(d)",
+        "type": "number",
+        "default": 28,
+        "required": true
+      },
+      {
+        "key": "breaking_load_kn",
+        "label": "破坏荷载(kN)",
+        "type": "number",
+        "required": false
+      },
+      {
+        "key": "strength_mpa",
+        "label": "抗压强度(MPa)",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "representative_value_mpa",
+        "label": "代表值(MPa)",
+        "type": "number",
+        "required": false
+      }
+    ]
+  },
+  {
+    "key": "rebar_tensile",
+    "name": "钢筋原材拉伸",
+    "description": "热轧光圆/带肋钢筋原材力学性能检测",
+    "spec_enum_key": "rebar_grade",
+    "standard_ref": "GB/T 1499.1 / GB/T 1499.2 / GB/T 28900",
+    "source": "DB11/T 3032-2022 表F.17、表F.18",
+    "note": "常规检测项：下屈服强度、抗拉强度、断后伸长率、最大力总延伸率、弯曲性能、重量偏差。每批由同一牌号、同一炉罐号、同一尺寸钢筋组成，每批重量不大于60t；拉伸、弯曲试件应从不同根钢筋切取。",
+    "fields": [
+      {
+        "key": "grade",
+        "label": "牌号",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "diameter_mm",
+        "label": "直径(mm)",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "yield_strength_mpa",
+        "label": "下屈服强度(MPa)",
+        "aliases": [
+          "屈服强度"
+        ],
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "tensile_strength_mpa",
+        "label": "抗拉强度(MPa)",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "elongation_percent",
+        "label": "断后伸长率(%)",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "agt_percent",
+        "label": "最大力总延伸率(%)",
+        "type": "number",
+        "required": false
+      },
+      {
+        "key": "weight_deviation_percent",
+        "label": "重量偏差(%)",
+        "type": "number",
+        "required": false
+      },
+      {
+        "key": "cold_bend",
+        "label": "弯曲性能",
+        "aliases": [
+          "冷弯"
+        ],
+        "type": "enum",
+        "options": [
+          "合格",
+          "不合格"
+        ],
+        "required": true
+      }
+    ]
+  },
+  {
+    "key": "rebar_welded_joint",
+    "name": "钢筋焊接接头",
+    "description": "钢筋焊接接头拉伸（及弯曲）试验",
+    "spec_enum_key": "welding_type",
+    "standard_ref": "JGJ/T 27 / JGJ 18",
+    "source": "DB11/T 3032-2022 表F.60～表F.63",
+    "note": "同一台班内同一焊工完成的300个同牌号、同直径接头为一批，不足按一批计；闪光对焊每批切6个接头（3拉3弯），电弧焊/电渣压力焊每批切3个做拉伸，气压焊柱墙竖向切3个拉伸、梁板水平另切3个弯曲。",
+    "fields": [
+      {
+        "key": "welding_type",
+        "label": "焊接类型",
+        "type": "enum",
+        "options": [
+          "电弧焊",
+          "电渣压力焊",
+          "气压焊",
+          "闪光对焊",
+          "电弧搭接焊",
+          "帮条焊"
+        ],
+        "required": true
+      },
+      {
+        "key": "grade",
+        "label": "牌号",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "diameter_mm",
+        "label": "直径(mm)",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "tensile_strength_mpa",
+        "label": "抗拉强度(MPa)",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "bend_performance",
+        "label": "弯曲性能",
+        "type": "enum",
+        "options": [
+          "合格",
+          "不合格"
+        ],
+        "required": false
+      },
+      {
+        "key": "fracture_location",
+        "label": "断裂位置",
+        "type": "enum",
+        "options": [
+          "焊缝",
+          "母材",
+          "热影响区"
+        ],
+        "required": true
+      },
+      {
+        "key": "fracture_form",
+        "label": "断裂形态",
+        "type": "enum",
+        "options": [
+          "延性",
+          "脆性"
+        ],
+        "required": true
+      }
+    ]
+  },
+  {
+    "key": "mortar_compressive",
+    "name": "砂浆抗压强度",
+    "description": "砌筑、抹面砂浆立方体试件抗压强度检测",
+    "spec_enum_key": "mortar_grade",
+    "standard_ref": "SL/T 352 / GB/T 50107",
+    "source": "DB11/T 3032-2022 附录F（砂浆）",
+    "note": "每台班或每50m³砂浆成型一组试块（不足亦成型一组）；评定：同一验收批平均值不低于设计强度等级，最小值不低于设计强度的75%。依据 DB11/T 3032-2022。",
+    "fields": [
+      {
+        "key": "age_days",
+        "label": "龄期(d)",
+        "type": "number",
+        "default": 28,
+        "required": true
+      },
+      {
+        "key": "strength_mpa",
+        "label": "抗压强度(MPa)",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "representative_value_mpa",
+        "label": "代表值(MPa)",
+        "type": "number",
+        "required": false
+      }
+    ]
+  },
+  {
+    "key": "concrete_flexural",
+    "name": "混凝土抗折(弯拉)强度",
+    "description": "水泥混凝土弯拉（抗折）强度检测",
+    "spec_enum_key": "flexural_grade",
+    "standard_ref": "SL/T 352 / JTG/T F30 / GB/T 50081",
+    "source": "DB11/T 3032-2022 附录F",
+    "note": "抗折试件每100m³或每工作班成型一组；评定：抗折（弯拉）强度代表值不低于设计弯拉强度标准值。规格栏填设计弯拉强度（MPa）。",
+    "fields": [
+      {
+        "key": "age_days",
+        "label": "龄期(d)",
+        "type": "number",
+        "default": 28,
+        "required": true
+      },
+      {
+        "key": "flexural_strength_mpa",
+        "label": "抗折强度(MPa)",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "representative_value_mpa",
+        "label": "代表值(MPa)",
+        "type": "number",
+        "required": false
+      }
+    ]
+  },
+  {
+    "key": "concrete_impermeability",
+    "name": "混凝土抗渗性能",
+    "description": "混凝土抗渗等级（渗透性能）检测",
+    "spec_enum_key": "impermeability_grade",
+    "standard_ref": "SL/T 352 / GB/T 50082",
+    "source": "DB11/T 3032-2022 附录F（混凝土耐久性）",
+    "note": "抗渗试件按设计抗渗等级确定组数，一般同一配合比每500m³或每工作班一组；评定：实测抗渗等级不低于设计抗渗等级。",
+    "fields": [
+      {
+        "key": "measured_grade",
+        "label": "实测抗渗等级",
+        "type": "enum",
+        "options": [
+          "W4",
+          "W6",
+          "W8",
+          "W10",
+          "W12"
+        ],
+        "required": true
+      },
+      {
+        "key": "seepage_height_mm",
+        "label": "渗水高度(mm)",
+        "type": "number",
+        "required": false
+      }
+    ]
+  },
+  {
+    "key": "concrete_frost",
+    "name": "混凝土抗冻性能",
+    "description": "混凝土抗冻等级（冻融循环）检测",
+    "spec_enum_key": "frost_grade",
+    "standard_ref": "SL/T 352 / GB/T 50082",
+    "source": "DB11/T 3032-2022 附录F（混凝土耐久性）",
+    "note": "抗冻试件按设计抗冻等级确定；评定：经受设计规定的冻融循环次数后，相对动弹模不低于60%且质量损失率不超过5%。规格栏填设计抗冻等级F。",
+    "fields": [
+      {
+        "key": "freeze_cycles",
+        "label": "冻融循环次数",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "relative_dynamic_modulus",
+        "label": "相对动弹模(%)",
+        "type": "number",
+        "required": false
+      },
+      {
+        "key": "mass_loss_percent",
+        "label": "质量损失率(%)",
+        "type": "number",
+        "required": false
+      }
+    ]
+  },
+  {
+    "key": "compaction_degree",
+    "name": "土方压实度",
+    "description": "填筑土方压实度检测（灌砂法/环刀法）",
+    "spec_enum_key": "compaction_spec",
+    "standard_ref": "SL 237 / JTG 3430 / SL 677",
+    "source": "DB11/T 3032-2022 附录F / SL 677",
+    "note": "逐层或按规定批量抽检；评定：实测压实度不低于设计压实度。规格栏填设计压实度（%），如95代表95%。",
+    "fields": [
+      {
+        "key": "max_dry_density",
+        "label": "最大干密度(g/cm³)",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "dry_density",
+        "label": "实测干密度(g/cm³)",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "compaction_percent",
+        "label": "压实度(%)",
+        "type": "number",
+        "required": true
+      }
+    ]
+  },
+  {
+    "key": "rebar_mech_joint",
+    "name": "钢筋机械连接接头",
+    "description": "钢筋机械连接接头拉伸试验",
+    "spec_enum_key": "rebar_grade",
+    "standard_ref": "JGJ 107 / GB/T 28900",
+    "source": "DB11/T 3032-2022 附录F（钢筋接头）",
+    "note": "同一施工条件下采用同一批材料的同等级、同型式、同规格接头，每500个为一批，不足按一批计；评定：接头抗拉强度不低于母材抗拉强度标准值。",
+    "fields": [
+      {
+        "key": "grade",
+        "label": "牌号",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "diameter_mm",
+        "label": "直径(mm)",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "joint_type",
+        "label": "接头型式",
+        "type": "enum",
+        "options": [
+          "直螺纹",
+          "锥螺纹",
+          "镦粗直螺纹",
+          "挤压套筒"
+        ],
+        "required": true
+      },
+      {
+        "key": "tensile_strength_mpa",
+        "label": "抗拉强度(MPa)",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "residual_deformation_mm",
+        "label": "残余变形(mm)",
+        "type": "number",
+        "required": false
+      }
+    ]
+  },
+  {
+    "key": "prestress_strand",
+    "name": "预应力钢绞线",
+    "description": "预应力混凝土用钢绞线力学性能检测",
+    "spec_enum_key": "strand_spec",
+    "standard_ref": "GB/T 5224 / GB/T 21839",
+    "source": "DB11/T 3032-2022 附录F（预应力材料）",
+    "note": "同一牌号、同一规格、同一生产工艺的钢绞线每批不超过60t；评定：抗拉强度、规定非比例延伸力、最大力总延伸率满足 GB/T 5224 相应规格要求（常用1860MPa级）。",
+    "fields": [
+      {
+        "key": "tensile_strength_mpa",
+        "label": "抗拉强度(MPa)",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "non_proportional_extension_force_kn",
+        "label": "规定非比例延伸力(kN)",
+        "type": "number",
+        "required": false
+      },
+      {
+        "key": "max_force_elongation_percent",
+        "label": "最大力总延伸率(%)",
+        "type": "number",
+        "required": false
+      },
+      {
+        "key": "relaxation_percent",
+        "label": "应力松弛率(%)",
+        "type": "number",
+        "required": false
+      }
+    ]
+  },
+  {
+    "key": "pile_integrity",
+    "name": "桩身完整性",
+    "description": "灌注桩/预制桩桩身完整性检测（低应变/声波透射）",
+    "spec_enum_key": "pile_diameter",
+    "standard_ref": "JGJ 106 / JTG/T 3512 / DB11/T 3032-2022",
+    "source": "DB11/T 3032-2022 附录F（地基基础）",
+    "note": "低应变检测数量按规范抽检；声波透射法用于重要桩；评定：桩身完整性类别为Ⅰ类、Ⅱ类为合格。规格栏填桩径(mm)。",
+    "fields": [
+      {
+        "key": "pile_no",
+        "label": "桩号",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "test_method",
+        "label": "检测方法",
+        "type": "enum",
+        "options": [
+          "低应变",
+          "声波透射",
+          "高应变"
+        ],
+        "required": true
+      },
+      {
+        "key": "integrity_category",
+        "label": "完整性类别",
+        "type": "enum",
+        "options": [
+          "I",
+          "II",
+          "III",
+          "IV"
+        ],
+        "required": true
+      }
+    ]
+  },
+  {
+    "key": "cement_material",
+    "name": "水泥(原材)",
+    "description": "通用硅酸盐水泥原材物理力学性能检测",
+    "spec_enum_key": "cement_type",
+    "standard_ref": "GB 175 / GB/T 17671 / GB/T 1346",
+    "source": "DB11/T 3032-2022 附录F（水泥）",
+    "note": "同一生产厂家、同一品种、同一强度等级、同一批号且连续进场的水泥，散装每500t、袋装每200t为一批；评定：安定性合格，28d抗压、抗折强度不低于 GB 175 相应强度等级要求。",
+    "fields": [
+      {
+        "key": "compressive_28d_mpa",
+        "label": "28d抗压强度(MPa)",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "flexural_28d_mpa",
+        "label": "28d抗折强度(MPa)",
+        "type": "number",
+        "required": false
+      },
+      {
+        "key": "soundness",
+        "label": "安定性",
+        "type": "enum",
+        "options": [
+          "合格",
+          "不合格"
+        ],
+        "required": true
+      },
+      {
+        "key": "initial_setting_min",
+        "label": "初凝时间(min)",
+        "type": "number",
+        "required": false
+      }
+    ]
+  }
+]

@@ -1,0 +1,1703 @@
+{
+  "sections": [
+    {
+      "code": "施工一标",
+      "name": "施工一标"
+    },
+    {
+      "code": "施工二标",
+      "name": "施工二标"
+    },
+    {
+      "code": "施工三标",
+      "name": "施工三标"
+    },
+    {
+      "code": "施工四标",
+      "name": "施工四标"
+    },
+    {
+      "code": "施工五标",
+      "name": "施工五标"
+    },
+    {
+      "code": "施工六标",
+      "name": "施工六标"
+    },
+    {
+      "code": "施工七标",
+      "name": "施工七标"
+    },
+    {
+      "code": "穿六环路标",
+      "name": "穿六环路标"
+    }
+  ],
+  "unit_engineerings": [
+    {
+      "ue_code": "WCJH-1-HD",
+      "ue_name": "河道工程",
+      "section": "施工一标"
+    },
+    {
+      "ue_code": "WCJH-1-GBXHZ",
+      "ue_name": "港北泄洪闸工程",
+      "section": "施工一标"
+    },
+    {
+      "ue_code": "WCJH-1-RGLQ",
+      "ue_name": "任港路桥工程",
+      "section": "施工一标"
+    },
+    {
+      "ue_code": "WCJH-1-YDLQ",
+      "ue_name": "潮白河右堤路桥工程",
+      "section": "施工一标"
+    },
+    {
+      "ue_code": "WCJH-2-HD",
+      "ue_name": "河道单位工程",
+      "section": "施工二标"
+    },
+    {
+      "ue_code": "WCJH-2-PJTDQ",
+      "ue_name": "平家疃东桥单位工程",
+      "section": "施工二标"
+    },
+    {
+      "ue_code": "WCJH-2-YTDS",
+      "ue_name": "余土堆山单位工程",
+      "section": "施工二标"
+    },
+    {
+      "ue_code": "WCJH-3-HD",
+      "ue_name": "河道工程",
+      "section": "施工三标"
+    },
+    {
+      "ue_code": "WCJH-3-YYHZ",
+      "ue_name": "月牙河节制闸工程",
+      "section": "施工三标"
+    },
+    {
+      "ue_code": "WCJH-3-ZBHZ1",
+      "ue_name": "中坝河1#节制闸工程",
+      "section": "施工三标"
+    },
+    {
+      "ue_code": "WCJH-3-ZBHZ2",
+      "ue_name": "中坝河2#节制闸工程",
+      "section": "施工三标"
+    },
+    {
+      "ue_code": "WCJH-3-PJTQ",
+      "ue_name": "平家疃桥工程",
+      "section": "施工三标"
+    },
+    {
+      "ue_code": "WCJH-3-PZLQ",
+      "ue_name": "平翟路桥工程",
+      "section": "施工三标"
+    },
+    {
+      "ue_code": "WCJH-3-THLQ",
+      "ue_name": "通怀路桥工程",
+      "section": "施工三标"
+    },
+    {
+      "ue_code": "WCJH-4-HD",
+      "ue_name": "河道工程",
+      "section": "施工四标"
+    },
+    {
+      "ue_code": "WCJH-4-XPLQ1",
+      "ue_name": "徐平路1#桥工程",
+      "section": "施工四标"
+    },
+    {
+      "ue_code": "WCJH-4-XPLQ2",
+      "ue_name": "徐平路2#桥工程",
+      "section": "施工四标"
+    },
+    {
+      "ue_code": "WCJH-5-HD",
+      "ue_name": "河道工程",
+      "section": "施工五标"
+    },
+    {
+      "ue_code": "WCJH-5-JZZ",
+      "ue_name": "小中河2#节制闸工程",
+      "section": "施工五标"
+    },
+    {
+      "ue_code": "WCJH-5-GYNMQ",
+      "ue_name": "公园南门桥工程",
+      "section": "施工五标"
+    },
+    {
+      "ue_code": "WCJH-5-TSLQ",
+      "ue_name": "通顺路桥工程",
+      "section": "施工五标"
+    },
+    {
+      "ue_code": "WCJH-6-HD",
+      "ue_name": "河道工程",
+      "section": "施工六标"
+    },
+    {
+      "ue_code": "WCJH-6-WD",
+      "ue_name": "新建围堤工程",
+      "section": "施工六标"
+    },
+    {
+      "ue_code": "WCJH-6-BFLQ",
+      "ue_name": "壁富路桥工程",
+      "section": "施工六标"
+    },
+    {
+      "ue_code": "WCJH-6-RXQ",
+      "ue_name": "东郊森林公园人行桥工程",
+      "section": "施工六标"
+    },
+    {
+      "ue_code": "WCJH-6-CXQ",
+      "ue_name": "东郊森林公园车行桥工程",
+      "section": "施工六标"
+    },
+    {
+      "ue_code": "WCJH-6-JZZ",
+      "ue_name": "小中河1#节制闸工程",
+      "section": "施工六标"
+    },
+    {
+      "ue_code": "WCJH-6-YTDS",
+      "ue_name": "2#余土堆山工程",
+      "section": "施工六标"
+    },
+    {
+      "ue_code": "WCJH-7-HD",
+      "ue_name": "河道工程",
+      "section": "施工七标"
+    },
+    {
+      "ue_code": "WCJH-7-PNLQ",
+      "ue_name": "规划平内路桥工程",
+      "section": "施工七标"
+    },
+    {
+      "ue_code": "WCJH-7-ZDLQ",
+      "ue_name": "温榆河左堤路桥工程",
+      "section": "施工七标"
+    },
+    {
+      "ue_code": "WCJH-7-GQFHZ",
+      "ue_name": "葛渠分洪闸工程",
+      "section": "施工七标"
+    },
+    {
+      "ue_code": "WCJH-7-YTDS",
+      "ue_name": "1#余土堆山工程",
+      "section": "施工七标"
+    },
+    {
+      "ue_code": "WCJH-LHB-HD",
+      "ue_name": "河道工程",
+      "section": "穿六环路标"
+    },
+    {
+      "ue_code": "WCJH-LHB-WCJHQ",
+      "ue_name": "温潮减河大桥工程",
+      "section": "穿六环路标"
+    }
+  ],
+  "divisions": [
+    {
+      "code": "WCJH-1-HD-01",
+      "name": "河道、筑堤及护砌工程(12+500~12+900)",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-HD-02",
+      "name": "河道、筑堤及护砌工程(12+900~13+921.39)",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-HD-03",
+      "name": "穿堤建筑物工程",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-HD-04",
+      "name": "电气自动化及附属工程",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-GBXHZ-01",
+      "name": "上游联结段",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-GBXHZ",
+      "ue_name": "港北泄洪闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-GBXHZ-02",
+      "name": "地基基础与防渗",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-GBXHZ",
+      "ue_name": "港北泄洪闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-GBXHZ-03",
+      "name": "闸室段",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-GBXHZ",
+      "ue_name": "港北泄洪闸工程",
+      "is_main": true
+    },
+    {
+      "code": "WCJH-1-GBXHZ-04",
+      "name": "消能防冲段",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-GBXHZ",
+      "ue_name": "港北泄洪闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-GBXHZ-05",
+      "name": "下游联结段",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-GBXHZ",
+      "ue_name": "港北泄洪闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-GBXHZ-06",
+      "name": "金属结构及启闭机安装",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-GBXHZ",
+      "ue_name": "港北泄洪闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-GBXHZ-07",
+      "name": "管理房",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-GBXHZ",
+      "ue_name": "港北泄洪闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-RGLQ-01",
+      "name": "地基与基础",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-RGLQ",
+      "ue_name": "任港路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-RGLQ-02",
+      "name": "下部结构",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-RGLQ",
+      "ue_name": "任港路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-RGLQ-03",
+      "name": "上部结构",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-RGLQ",
+      "ue_name": "任港路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-RGLQ-04",
+      "name": "桥面系",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-RGLQ",
+      "ue_name": "任港路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-RGLQ-05",
+      "name": "附属设施",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-RGLQ",
+      "ue_name": "任港路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-YDLQ-01",
+      "name": "地基与基础",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-YDLQ",
+      "ue_name": "潮白河右堤路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-YDLQ-02",
+      "name": "下部结构",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-YDLQ",
+      "ue_name": "潮白河右堤路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-YDLQ-03",
+      "name": "上部结构",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-YDLQ",
+      "ue_name": "潮白河右堤路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-YDLQ-04",
+      "name": "桥面系",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-YDLQ",
+      "ue_name": "潮白河右堤路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-1-YDLQ-05",
+      "name": "附属设施",
+      "section": "施工一标",
+      "ue_code": "WCJH-1-YDLQ",
+      "ue_name": "潮白河右堤路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-2-HD-01",
+      "name": "河道、筑堤及护砌工程(11+000~11+600)",
+      "section": "施工二标",
+      "ue_code": "WCJH-2-HD",
+      "ue_name": "河道单位工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-2-HD-02",
+      "name": "河道、筑堤及护砌工程(11+600~11+900)",
+      "section": "施工二标",
+      "ue_code": "WCJH-2-HD",
+      "ue_name": "河道单位工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-2-HD-03",
+      "name": "河道、筑堤及护砌工程(11+900~12+500)",
+      "section": "施工二标",
+      "ue_code": "WCJH-2-HD",
+      "ue_name": "河道单位工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-2-HD-04",
+      "name": "电气及自动化工程",
+      "section": "施工二标",
+      "ue_code": "WCJH-2-HD",
+      "ue_name": "河道单位工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-2-PJTDQ-01",
+      "name": "基础及下部结构",
+      "section": "施工二标",
+      "ue_code": "WCJH-2-PJTDQ",
+      "ue_name": "平家疃东桥单位工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-2-PJTDQ-02",
+      "name": "上部及桥面系附属工程",
+      "section": "施工二标",
+      "ue_code": "WCJH-2-PJTDQ",
+      "ue_name": "平家疃东桥单位工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-2-PJTDQ-03",
+      "name": "防护、引道工程",
+      "section": "施工二标",
+      "ue_code": "WCJH-2-PJTDQ",
+      "ue_name": "平家疃东桥单位工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-2-YTDS-01",
+      "name": "余土堆山一区",
+      "section": "施工二标",
+      "ue_code": "WCJH-2-YTDS",
+      "ue_name": "余土堆山单位工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-2-YTDS-02",
+      "name": "余土堆山二区",
+      "section": "施工二标",
+      "ue_code": "WCJH-2-YTDS",
+      "ue_name": "余土堆山单位工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-2-YTDS-03",
+      "name": "余土堆山三区",
+      "section": "施工二标",
+      "ue_code": "WCJH-2-YTDS",
+      "ue_name": "余土堆山单位工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-2-YTDS-04",
+      "name": "余土堆山四区",
+      "section": "施工二标",
+      "ue_code": "WCJH-2-YTDS",
+      "ue_name": "余土堆山单位工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-2-YTDS-05",
+      "name": "排水沟",
+      "section": "施工二标",
+      "ue_code": "WCJH-2-YTDS",
+      "ue_name": "余土堆山单位工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-2-YTDS-06",
+      "name": "碎石路",
+      "section": "施工二标",
+      "ue_code": "WCJH-2-YTDS",
+      "ue_name": "余土堆山单位工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-HD-01",
+      "name": "河道、筑堤及护砌工程(8+000~9+000)",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-HD-02",
+      "name": "河道、筑堤工程(9+000~10+000)",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-HD-03",
+      "name": "河道、筑堤及护砌工程(10+000~11+000)",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-HD-04",
+      "name": "穿堤构筑物工程",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-HD-05",
+      "name": "电气及自动化工程",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-YYHZ-01",
+      "name": "地基防渗",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-YYHZ",
+      "ue_name": "月牙河节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-YYHZ-02",
+      "name": "上游联结段",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-YYHZ",
+      "ue_name": "月牙河节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-YYHZ-03",
+      "name": "闸室段",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-YYHZ",
+      "ue_name": "月牙河节制闸工程",
+      "is_main": true
+    },
+    {
+      "code": "WCJH-3-YYHZ-04",
+      "name": "消能防冲段",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-YYHZ",
+      "ue_name": "月牙河节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-YYHZ-05",
+      "name": "下游联结段",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-YYHZ",
+      "ue_name": "月牙河节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-YYHZ-06",
+      "name": "巡河路桥工程",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-YYHZ",
+      "ue_name": "月牙河节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-YYHZ-07",
+      "name": "金属结构及启闭机安装",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-YYHZ",
+      "ue_name": "月牙河节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-YYHZ-08",
+      "name": "闸房",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-YYHZ",
+      "ue_name": "月牙河节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-ZBHZ1-01",
+      "name": "地基防渗",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-ZBHZ1",
+      "ue_name": "中坝河1#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-ZBHZ1-02",
+      "name": "上游联结段",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-ZBHZ1",
+      "ue_name": "中坝河1#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-ZBHZ1-03",
+      "name": "闸室段",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-ZBHZ1",
+      "ue_name": "中坝河1#节制闸工程",
+      "is_main": true
+    },
+    {
+      "code": "WCJH-3-ZBHZ1-04",
+      "name": "消能防冲段",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-ZBHZ1",
+      "ue_name": "中坝河1#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-ZBHZ1-05",
+      "name": "下游联结段",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-ZBHZ1",
+      "ue_name": "中坝河1#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-ZBHZ1-06",
+      "name": "巡河路桥工程",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-ZBHZ1",
+      "ue_name": "中坝河1#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-ZBHZ1-07",
+      "name": "金属结构及启闭机安装",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-ZBHZ1",
+      "ue_name": "中坝河1#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-ZBHZ1-08",
+      "name": "闸房",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-ZBHZ1",
+      "ue_name": "中坝河1#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-ZBHZ2-01",
+      "name": "地基防渗",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-ZBHZ2",
+      "ue_name": "中坝河2#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-ZBHZ2-02",
+      "name": "上游联结段",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-ZBHZ2",
+      "ue_name": "中坝河2#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-ZBHZ2-03",
+      "name": "闸室段",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-ZBHZ2",
+      "ue_name": "中坝河2#节制闸工程",
+      "is_main": true
+    },
+    {
+      "code": "WCJH-3-ZBHZ2-04",
+      "name": "暗涵段",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-ZBHZ2",
+      "ue_name": "中坝河2#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-ZBHZ2-05",
+      "name": "下游联结段",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-ZBHZ2",
+      "ue_name": "中坝河2#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-ZBHZ2-06",
+      "name": "金属结构及启闭机安装",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-ZBHZ2",
+      "ue_name": "中坝河2#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-ZBHZ2-07",
+      "name": "电气及自动化工程",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-ZBHZ2",
+      "ue_name": "中坝河2#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-PJTQ-01",
+      "name": "地基与基础",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-PJTQ",
+      "ue_name": "平家疃桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-PJTQ-02",
+      "name": "下部结构",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-PJTQ",
+      "ue_name": "平家疃桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-PJTQ-03",
+      "name": "上部结构",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-PJTQ",
+      "ue_name": "平家疃桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-PJTQ-04",
+      "name": "桥面系",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-PJTQ",
+      "ue_name": "平家疃桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-PJTQ-05",
+      "name": "附属设施",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-PJTQ",
+      "ue_name": "平家疃桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-PZLQ-01",
+      "name": "地基与基础",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-PZLQ",
+      "ue_name": "平翟路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-PZLQ-02",
+      "name": "下部结构",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-PZLQ",
+      "ue_name": "平翟路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-PZLQ-03",
+      "name": "上部结构",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-PZLQ",
+      "ue_name": "平翟路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-PZLQ-04",
+      "name": "桥面系",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-PZLQ",
+      "ue_name": "平翟路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-PZLQ-05",
+      "name": "附属设施",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-PZLQ",
+      "ue_name": "平翟路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-THLQ-01",
+      "name": "地基与基础",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-THLQ",
+      "ue_name": "通怀路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-THLQ-02",
+      "name": "下部结构",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-THLQ",
+      "ue_name": "通怀路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-THLQ-03",
+      "name": "上部结构",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-THLQ",
+      "ue_name": "通怀路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-THLQ-04",
+      "name": "桥面系",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-THLQ",
+      "ue_name": "通怀路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-3-THLQ-05",
+      "name": "附属设施",
+      "section": "施工三标",
+      "ue_code": "WCJH-3-THLQ",
+      "ue_name": "通怀路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-4-HD-01",
+      "name": "河道、筑堤及护砌工程(5+774~6+019)",
+      "section": "施工四标",
+      "ue_code": "WCJH-4-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-4-HD-02",
+      "name": "河道、筑堤及护砌工程(6+260~7+250)",
+      "section": "施工四标",
+      "ue_code": "WCJH-4-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-4-HD-03",
+      "name": "河道、筑堤及护砌工程(7+250~8+000)",
+      "section": "施工四标",
+      "ue_code": "WCJH-4-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-4-HD-04",
+      "name": "电气及自动化工程",
+      "section": "施工四标",
+      "ue_code": "WCJH-4-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-4-HD-05",
+      "name": "附属工程",
+      "section": "施工四标",
+      "ue_code": "WCJH-4-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-4-XPLQ1-01",
+      "name": "地基与基础",
+      "section": "施工四标",
+      "ue_code": "WCJH-4-XPLQ1",
+      "ue_name": "徐平路1#桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-4-XPLQ1-02",
+      "name": "下部结构",
+      "section": "施工四标",
+      "ue_code": "WCJH-4-XPLQ1",
+      "ue_name": "徐平路1#桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-4-XPLQ1-03",
+      "name": "上部结构",
+      "section": "施工四标",
+      "ue_code": "WCJH-4-XPLQ1",
+      "ue_name": "徐平路1#桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-4-XPLQ1-04",
+      "name": "桥面系",
+      "section": "施工四标",
+      "ue_code": "WCJH-4-XPLQ1",
+      "ue_name": "徐平路1#桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-4-XPLQ1-05",
+      "name": "附属设施",
+      "section": "施工四标",
+      "ue_code": "WCJH-4-XPLQ1",
+      "ue_name": "徐平路1#桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-4-XPLQ2-01",
+      "name": "地基与基础",
+      "section": "施工四标",
+      "ue_code": "WCJH-4-XPLQ2",
+      "ue_name": "徐平路2#桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-4-XPLQ2-02",
+      "name": "下部结构",
+      "section": "施工四标",
+      "ue_code": "WCJH-4-XPLQ2",
+      "ue_name": "徐平路2#桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-4-XPLQ2-03",
+      "name": "上部结构",
+      "section": "施工四标",
+      "ue_code": "WCJH-4-XPLQ2",
+      "ue_name": "徐平路2#桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-4-XPLQ2-04",
+      "name": "桥面系",
+      "section": "施工四标",
+      "ue_code": "WCJH-4-XPLQ2",
+      "ue_name": "徐平路2#桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-4-XPLQ2-05",
+      "name": "附属设施",
+      "section": "施工四标",
+      "ue_code": "WCJH-4-XPLQ2",
+      "ue_name": "徐平路2#桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-HD-01",
+      "name": "河道、筑堤及护砌工程(3+050~4+000)",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-HD-02",
+      "name": "河道、筑堤及护砌工程(4+000~5+000)",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-HD-03",
+      "name": "河道、筑堤及护砌工程(5+000~5+400)",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-HD-04",
+      "name": "穿堤构筑物工程",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-HD-05",
+      "name": "电气及自动化工程",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-JZZ-01",
+      "name": "上游联结段",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-JZZ",
+      "ue_name": "小中河2#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-JZZ-02",
+      "name": "地基防渗",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-JZZ",
+      "ue_name": "小中河2#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-JZZ-03",
+      "name": "闸室段",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-JZZ",
+      "ue_name": "小中河2#节制闸工程",
+      "is_main": true
+    },
+    {
+      "code": "WCJH-5-JZZ-04",
+      "name": "消能防冲段",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-JZZ",
+      "ue_name": "小中河2#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-JZZ-05",
+      "name": "下游联结段",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-JZZ",
+      "ue_name": "小中河2#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-JZZ-06",
+      "name": "交通桥",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-JZZ",
+      "ue_name": "小中河2#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-JZZ-07",
+      "name": "金属结构及启闭机安装",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-JZZ",
+      "ue_name": "小中河2#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-JZZ-08",
+      "name": "闸房",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-JZZ",
+      "ue_name": "小中河2#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-GYNMQ-01",
+      "name": "地基与基础",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-GYNMQ",
+      "ue_name": "公园南门桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-GYNMQ-02",
+      "name": "下部结构",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-GYNMQ",
+      "ue_name": "公园南门桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-GYNMQ-03",
+      "name": "上部结构",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-GYNMQ",
+      "ue_name": "公园南门桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-GYNMQ-04",
+      "name": "桥面系",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-GYNMQ",
+      "ue_name": "公园南门桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-GYNMQ-05",
+      "name": "附属设施",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-GYNMQ",
+      "ue_name": "公园南门桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-TSLQ-01",
+      "name": "地基与基础",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-TSLQ",
+      "ue_name": "通顺路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-TSLQ-02",
+      "name": "下部结构",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-TSLQ",
+      "ue_name": "通顺路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-TSLQ-03",
+      "name": "上部结构",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-TSLQ",
+      "ue_name": "通顺路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-TSLQ-04",
+      "name": "桥面系",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-TSLQ",
+      "ue_name": "通顺路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-5-TSLQ-05",
+      "name": "附属设施",
+      "section": "施工五标",
+      "ue_code": "WCJH-5-TSLQ",
+      "ue_name": "通顺路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-HD-01",
+      "name": "河道、筑堤及护砌工程(1+500~2+000)",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-HD-02",
+      "name": "河道、筑堤及护砌工程(2+000~2+500)",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-HD-03",
+      "name": "河道、筑堤及护砌工程(2+500~3+050)",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-HD-04",
+      "name": "电气及自动化工程",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-WD-01",
+      "name": "筑堤及护砌工程(XWD0+000~XWD1+432.5)",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-WD",
+      "ue_name": "新建围堤工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-WD-02",
+      "name": "筑堤及护砌工程(BWD0+000~BWD1+898.477)",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-WD",
+      "ue_name": "新建围堤工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-WD-03",
+      "name": "筑堤及护砌工程(DWD0+000~DWD1+200)",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-WD",
+      "ue_name": "新建围堤工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-WD-04",
+      "name": "筑堤及护砌工程(DWD1+200~DWD1+975.8)",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-WD",
+      "ue_name": "新建围堤工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-WD-05",
+      "name": "交通闸工程",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-WD",
+      "ue_name": "新建围堤工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-HD-06",
+      "name": "穿堤构筑物",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-WD",
+      "ue_name": "新建围堤工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-HD-07",
+      "name": "电气及自动化工程",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-WD",
+      "ue_name": "新建围堤工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-BFLQ-01",
+      "name": "地基与基础",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-BFLQ",
+      "ue_name": "壁富路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-BFLQ-02",
+      "name": "下部结构",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-BFLQ",
+      "ue_name": "壁富路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-BFLQ-03",
+      "name": "上部结构",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-BFLQ",
+      "ue_name": "壁富路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-BFLQ-04",
+      "name": "桥面系",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-BFLQ",
+      "ue_name": "壁富路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-BFLQ-05",
+      "name": "附属设施",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-BFLQ",
+      "ue_name": "壁富路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-RXQ-01",
+      "name": "地基及下部结构",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-RXQ",
+      "ue_name": "东郊森林公园人行桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-RXQ-02",
+      "name": "上部结构及桥面附属设施",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-RXQ",
+      "ue_name": "东郊森林公园人行桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-RXQ-03",
+      "name": "防护工程",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-RXQ",
+      "ue_name": "东郊森林公园人行桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-CXQ-01",
+      "name": "地基及下部结构",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-CXQ",
+      "ue_name": "东郊森林公园车行桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-CXQ-02",
+      "name": "上部结构及桥面附属设施",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-CXQ",
+      "ue_name": "东郊森林公园车行桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-CXQ-03",
+      "name": "防护工程",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-CXQ",
+      "ue_name": "东郊森林公园车行桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-JZZ-01",
+      "name": "上游联结段",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-JZZ",
+      "ue_name": "小中河1#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-JZZ-02",
+      "name": "地基防渗",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-JZZ",
+      "ue_name": "小中河1#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-JZZ-03",
+      "name": "闸室段",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-JZZ",
+      "ue_name": "小中河1#节制闸工程",
+      "is_main": true
+    },
+    {
+      "code": "WCJH-6-JZZ-04",
+      "name": "消能防冲段及下游连接段",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-JZZ",
+      "ue_name": "小中河1#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-JZZ-05",
+      "name": "金属结构及启闭机安装",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-JZZ",
+      "ue_name": "小中河1#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-JZZ-06",
+      "name": "闸房",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-JZZ",
+      "ue_name": "小中河1#节制闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-YTDS-01",
+      "name": "余土堆山一区",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-YTDS",
+      "ue_name": "2#余土堆山工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-YTDS-02",
+      "name": "余土堆山二区",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-YTDS",
+      "ue_name": "2#余土堆山工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-YTDS-03",
+      "name": "余土堆山三区",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-YTDS",
+      "ue_name": "2#余土堆山工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-YTDS-04",
+      "name": "余土堆山四区",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-YTDS",
+      "ue_name": "2#余土堆山工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-6-YTDS-05",
+      "name": "排水沟",
+      "section": "施工六标",
+      "ue_code": "WCJH-6-YTDS",
+      "ue_name": "2#余土堆山工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-HD-01",
+      "name": "河道、筑堤及护砌工程(-0+587.830~0+000)",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-HD-02",
+      "name": "河道、筑堤及护砌工程(0+000~0+500)",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-HD-03",
+      "name": "河道、筑堤及护砌工程(0+500~1+000)",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-HD-04",
+      "name": "河道、筑堤及护砌工程(1+000~1+500)",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-HD-05",
+      "name": "穿堤构筑物",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-HD-06",
+      "name": "电气及自动化工程",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-PNLQ-01",
+      "name": "地基与基础",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-PNLQ",
+      "ue_name": "规划平内路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-PNLQ-02",
+      "name": "下部结构",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-PNLQ",
+      "ue_name": "规划平内路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-PNLQ-03",
+      "name": "上部结构",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-PNLQ",
+      "ue_name": "规划平内路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-PNLQ-04",
+      "name": "桥面系",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-PNLQ",
+      "ue_name": "规划平内路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-PNLQ-05",
+      "name": "附属设施",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-PNLQ",
+      "ue_name": "规划平内路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-ZDLQ-01",
+      "name": "地基与基础",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-ZDLQ",
+      "ue_name": "温榆河左堤路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-ZDLQ-02",
+      "name": "下部结构",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-ZDLQ",
+      "ue_name": "温榆河左堤路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-ZDLQ-03",
+      "name": "上部结构",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-ZDLQ",
+      "ue_name": "温榆河左堤路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-ZDLQ-04",
+      "name": "桥面系",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-ZDLQ",
+      "ue_name": "温榆河左堤路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-ZDLQ-05",
+      "name": "附属设施",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-ZDLQ",
+      "ue_name": "温榆河左堤路桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-GQFHZ-01",
+      "name": "地基处理及防渗",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-GQFHZ",
+      "ue_name": "葛渠分洪闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-GQFHZ-02",
+      "name": "上游联结段",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-GQFHZ",
+      "ue_name": "葛渠分洪闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-GQFHZ-03",
+      "name": "闸室段",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-GQFHZ",
+      "ue_name": "葛渠分洪闸工程",
+      "is_main": true
+    },
+    {
+      "code": "WCJH-7-GQFHZ-04",
+      "name": "消能防冲段",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-GQFHZ",
+      "ue_name": "葛渠分洪闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-GQFHZ-05",
+      "name": "下游联结段",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-GQFHZ",
+      "ue_name": "葛渠分洪闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-GQFHZ-06",
+      "name": "金属结构及启闭机安装",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-GQFHZ",
+      "ue_name": "葛渠分洪闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-GQFHZ-07",
+      "name": "管理房",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-GQFHZ",
+      "ue_name": "葛渠分洪闸工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-YTDS-01",
+      "name": "1#余土堆山一区",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-YTDS",
+      "ue_name": "1#余土堆山工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-YTDS-02",
+      "name": "1#余土堆山二区",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-YTDS",
+      "ue_name": "1#余土堆山工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-YTDS-03",
+      "name": "1#余土堆山三区",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-YTDS",
+      "ue_name": "1#余土堆山工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-YTDS-04",
+      "name": "1#余土堆山四区",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-YTDS",
+      "ue_name": "1#余土堆山工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-YTDS-05",
+      "name": "排水沟",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-YTDS",
+      "ue_name": "1#余土堆山工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-7-YTDS-06",
+      "name": "碎石路",
+      "section": "施工七标",
+      "ue_code": "WCJH-7-YTDS",
+      "ue_name": "1#余土堆山工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-LHB-HD-01",
+      "name": "河道、筑堤及护砌工程(5+400~5+774)",
+      "section": "穿六环路标",
+      "ue_code": "WCJH-LHB-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-LHB-HD-02",
+      "name": "电气及自动化工程",
+      "section": "穿六环路标",
+      "ue_code": "WCJH-LHB-HD",
+      "ue_name": "河道工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-LHB-WCJHDQ-01",
+      "name": "地基与基础",
+      "section": "穿六环路标",
+      "ue_code": "WCJH-LHB-WCJHQ",
+      "ue_name": "温潮减河大桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-LHB-WCJHQ-02",
+      "name": "墩台",
+      "section": "穿六环路标",
+      "ue_code": "WCJH-LHB-WCJHQ",
+      "ue_name": "温潮减河大桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-LHB-WCJHQ-03",
+      "name": "盖梁",
+      "section": "穿六环路标",
+      "ue_code": "WCJH-LHB-WCJHQ",
+      "ue_name": "温潮减河大桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-LHB-WCJHQ-04",
+      "name": "支座",
+      "section": "穿六环路标",
+      "ue_code": "WCJH-LHB-WCJHQ",
+      "ue_name": "温潮减河大桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-LHB-WCJHQ-05",
+      "name": "桥跨承重结构",
+      "section": "穿六环路标",
+      "ue_code": "WCJH-LHB-WCJHQ",
+      "ue_name": "温潮减河大桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-LHB-WCJHQ-06",
+      "name": "桥面系",
+      "section": "穿六环路标",
+      "ue_code": "WCJH-LHB-WCJHQ",
+      "ue_name": "温潮减河大桥工程",
+      "is_main": false
+    },
+    {
+      "code": "WCJH-LHB-WCJHQ-07",
+      "name": "附属结构",
+      "section": "穿六环路标",
+      "ue_code": "WCJH-LHB-WCJHQ",
+      "ue_name": "温潮减河大桥工程",
+      "is_main": false
+    }
+  ]
+}

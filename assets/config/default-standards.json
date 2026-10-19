@@ -1,0 +1,465 @@
+[
+  {
+    "category_key": "concrete_compressive",
+    "spec": "C15",
+    "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+    "method": "statistical_or_nonstatistical",
+    "fcu_k": 15,
+    "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+  },
+  {
+    "category_key": "concrete_compressive",
+    "spec": "C20",
+    "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+    "method": "statistical_or_nonstatistical",
+    "fcu_k": 20,
+    "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+  },
+  {
+    "category_key": "concrete_compressive",
+    "spec": "C25",
+    "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+    "method": "statistical_or_nonstatistical",
+    "fcu_k": 25,
+    "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+  },
+  {
+    "category_key": "concrete_compressive",
+    "spec": "C30",
+    "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+    "method": "statistical_or_nonstatistical",
+    "fcu_k": 30,
+    "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+  },
+  {
+    "category_key": "concrete_compressive",
+    "spec": "C35",
+    "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+    "method": "statistical_or_nonstatistical",
+    "fcu_k": 35,
+    "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+  },
+  {
+    "category_key": "concrete_compressive",
+    "spec": "C40",
+    "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+    "method": "statistical_or_nonstatistical",
+    "fcu_k": 40,
+    "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+  },
+  {
+    "category_key": "concrete_compressive",
+    "spec": "C45",
+    "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+    "method": "statistical_or_nonstatistical",
+    "fcu_k": 45,
+    "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+  },
+  {
+    "category_key": "concrete_compressive",
+    "spec": "C50",
+    "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+    "method": "statistical_or_nonstatistical",
+    "fcu_k": 50,
+    "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+  },
+  {
+    "category_key": "concrete_compressive",
+    "spec": "C55",
+    "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+    "method": "statistical_or_nonstatistical",
+    "fcu_k": 55,
+    "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+  },
+  {
+    "category_key": "concrete_compressive",
+    "spec": "C60",
+    "standard_no": "SL/T 352 / GB/T 50081（评定 GB/T 50107）",
+    "method": "statistical_or_nonstatistical",
+    "fcu_k": 60,
+    "note": "依据DB11/T 3032-2022表F.58。频次(SL 677): 大体积混凝土每500m³成型一组, 结构混凝土每100m³成型一组, 不足亦成型一组。判定: n>=3统计法 mfcu>=0.95fcu_k且fcu_min>=0.85fcu_k; n<3非统计法 mfcu>=1.15fcu_k且fcu_min>=0.95fcu_k"
+  },
+  {
+    "category_key": "rebar_tensile",
+    "spec": "HPB300",
+    "standard_no": "GB/T 1499.1 / GB/T 28900",
+    "yield_min": 300,
+    "tensile_min": 420,
+    "elongation_min": 21,
+    "cold_bend_required": true,
+    "note": "依据DB11/T 3032-2022表F.17(热轧光圆钢筋)。频次: 每批由同一牌号、同一炉罐号、同一尺寸组成, 每批≤60t, 拉伸弯曲试件从不同根钢筋切取。判定: 下屈服强度>=300MPa, 抗拉强度>=420MPa, 断后伸长率>=21%, 弯曲性能合格"
+  },
+  {
+    "category_key": "rebar_tensile",
+    "spec": "HRB400",
+    "standard_no": "GB/T 1499.2 / GB/T 28900",
+    "yield_min": 400,
+    "tensile_min": 540,
+    "elongation_min": 16,
+    "cold_bend_required": true,
+    "note": "依据DB11/T 3032-2022表F.18(热轧带肋钢筋)。频次: 每批由同一牌号、同一炉罐号、同一尺寸组成, 每批≤60t, 拉伸弯曲试件从不同根钢筋切取。常规项: 下屈服强度、抗拉强度、断后伸长率、最大力总延伸率、弯曲性能、重量偏差。判定: 下屈服强度>=400MPa, 抗拉强度>=540MPa, 断后伸长率>=16%, 弯曲性能合格"
+  },
+  {
+    "category_key": "rebar_tensile",
+    "spec": "HRB500",
+    "standard_no": "GB/T 1499.2 / GB/T 28900",
+    "yield_min": 500,
+    "tensile_min": 630,
+    "elongation_min": 15,
+    "cold_bend_required": true,
+    "note": "依据DB11/T 3032-2022表F.18(热轧带肋钢筋)。频次: 每批由同一牌号、同一炉罐号、同一尺寸组成, 每批≤60t, 拉伸弯曲试件从不同根钢筋切取。判定: 下屈服强度>=500MPa, 抗拉强度>=630MPa, 断后伸长率>=15%, 弯曲性能合格"
+  },
+  {
+    "category_key": "rebar_tensile",
+    "spec": "HRBF400",
+    "standard_no": "GB/T 1499.2 / GB/T 28900",
+    "yield_min": 400,
+    "tensile_min": 540,
+    "elongation_min": 16,
+    "cold_bend_required": true,
+    "note": "依据DB11/T 3032-2022表F.18(热轧带肋钢筋)。频次: 每批由同一牌号、同一炉罐号、同一尺寸组成, 每批≤60t。判定: 下屈服强度>=400MPa, 抗拉强度>=540MPa, 断后伸长率>=16%, 弯曲性能合格"
+  },
+  {
+    "category_key": "rebar_tensile",
+    "spec": "HRBF500",
+    "standard_no": "GB/T 1499.2 / GB/T 28900",
+    "yield_min": 500,
+    "tensile_min": 630,
+    "elongation_min": 15,
+    "cold_bend_required": true,
+    "note": "依据DB11/T 3032-2022表F.18(热轧带肋钢筋)。频次: 每批由同一牌号、同一炉罐号、同一尺寸组成, 每批≤60t。判定: 下屈服强度>=500MPa, 抗拉强度>=630MPa, 断后伸长率>=15%, 弯曲性能合格"
+  },
+  {
+    "category_key": "rebar_tensile",
+    "spec": "RRB400",
+    "standard_no": "GB/T 1499.2 / GB/T 28900",
+    "yield_min": 400,
+    "tensile_min": 540,
+    "elongation_min": 14,
+    "cold_bend_required": true,
+    "note": "依据DB11/T 3032-2022表F.18(热轧带肋钢筋)。频次: 每批由同一牌号、同一炉罐号、同一尺寸组成, 每批≤60t。判定: 下屈服强度>=400MPa, 抗拉强度>=540MPa, 断后伸长率>=14%, 弯曲性能合格"
+  },
+  {
+    "category_key": "rebar_welded_joint",
+    "spec": "*",
+    "standard_no": "JGJ/T 27 / JGJ 18",
+    "tensile_min_factor": 1,
+    "fracture_location_pass": [
+      "母材"
+    ],
+    "fracture_form_pass": [
+      "延性"
+    ],
+    "note": "依据DB11/T 3032-2022表F.60～F.63。频次(JGJ 18): 同一台班同一焊工完成的300个同牌号同直径接头为一批, 不足按一批计; 闪光对焊每批切6个(3拉3弯), 电弧焊/电渣压力焊切3个拉伸, 气压焊竖向3拉水平3弯。判定: 抗拉强度>=母材标准抗拉强度, 断于母材且延性断裂为合格"
+  },
+  {
+    "category_key": "mortar_compressive",
+    "spec": "M5",
+    "standard_no": "SL/T 352 / GB/T 50107",
+    "fcu_k": 5,
+    "note": "依据DB11/T 3032-2022。频次: 每台班或每50m³成型一组。判定: 平均值>=设计强度等级(M5), 最小值>=设计强度的75%"
+  },
+  {
+    "category_key": "mortar_compressive",
+    "spec": "M7.5",
+    "standard_no": "SL/T 352 / GB/T 50107",
+    "fcu_k": 7.5,
+    "note": "依据DB11/T 3032-2022。频次: 每台班或每50m³成型一组。判定: 平均值>=设计强度等级(M7.5), 最小值>=设计强度的75%"
+  },
+  {
+    "category_key": "mortar_compressive",
+    "spec": "M10",
+    "standard_no": "SL/T 352 / GB/T 50107",
+    "fcu_k": 10,
+    "note": "依据DB11/T 3032-2022。频次: 每台班或每50m³成型一组。判定: 平均值>=设计强度等级(M10), 最小值>=设计强度的75%"
+  },
+  {
+    "category_key": "mortar_compressive",
+    "spec": "M15",
+    "standard_no": "SL/T 352 / GB/T 50107",
+    "fcu_k": 15,
+    "note": "依据DB11/T 3032-2022。频次: 每台班或每50m³成型一组。判定: 平均值>=设计强度等级(M15), 最小值>=设计强度的75%"
+  },
+  {
+    "category_key": "mortar_compressive",
+    "spec": "M20",
+    "standard_no": "SL/T 352 / GB/T 50107",
+    "fcu_k": 20,
+    "note": "依据DB11/T 3032-2022。频次: 每台班或每50m³成型一组。判定: 平均值>=设计强度等级(M20), 最小值>=设计强度的75%"
+  },
+  {
+    "category_key": "mortar_compressive",
+    "spec": "M25",
+    "standard_no": "SL/T 352 / GB/T 50107",
+    "fcu_k": 25,
+    "note": "依据DB11/T 3032-2022。频次: 每台班或每50m³成型一组。判定: 平均值>=设计强度等级(M25), 最小值>=设计强度的75%"
+  },
+  {
+    "category_key": "mortar_compressive",
+    "spec": "M30",
+    "standard_no": "SL/T 352 / GB/T 50107",
+    "fcu_k": 30,
+    "note": "依据DB11/T 3032-2022。频次: 每台班或每50m³成型一组。判定: 平均值>=设计强度等级(M30), 最小值>=设计强度的75%"
+  },
+  {
+    "category_key": "concrete_flexural",
+    "spec": "3.5",
+    "standard_no": "SL/T 352 / JTG/T F30",
+    "flexural_min": 3.5,
+    "note": "判定: 抗折(弯拉)强度代表值>=3.5MPa(设计弯拉强度标准值)"
+  },
+  {
+    "category_key": "concrete_flexural",
+    "spec": "4.0",
+    "standard_no": "SL/T 352 / JTG/T F30",
+    "flexural_min": 4,
+    "note": "判定: 抗折(弯拉)强度代表值>=4.0MPa(设计弯拉强度标准值)"
+  },
+  {
+    "category_key": "concrete_flexural",
+    "spec": "4.5",
+    "standard_no": "SL/T 352 / JTG/T F30",
+    "flexural_min": 4.5,
+    "note": "判定: 抗折(弯拉)强度代表值>=4.5MPa(设计弯拉强度标准值)"
+  },
+  {
+    "category_key": "concrete_flexural",
+    "spec": "5.0",
+    "standard_no": "SL/T 352 / JTG/T F30",
+    "flexural_min": 5,
+    "note": "判定: 抗折(弯拉)强度代表值>=5.0MPa(设计弯拉强度标准值)"
+  },
+  {
+    "category_key": "concrete_flexural",
+    "spec": "5.5",
+    "standard_no": "SL/T 352 / JTG/T F30",
+    "flexural_min": 5.5,
+    "note": "判定: 抗折(弯拉)强度代表值>=5.5MPa(设计弯拉强度标准值)"
+  },
+  {
+    "category_key": "concrete_impermeability",
+    "spec": "W4",
+    "standard_no": "SL/T 352 / GB/T 50082",
+    "grade_num": 4,
+    "note": "判定: 实测抗渗等级>=设计抗渗等级W4"
+  },
+  {
+    "category_key": "concrete_impermeability",
+    "spec": "W6",
+    "standard_no": "SL/T 352 / GB/T 50082",
+    "grade_num": 6,
+    "note": "判定: 实测抗渗等级>=设计抗渗等级W6"
+  },
+  {
+    "category_key": "concrete_impermeability",
+    "spec": "W8",
+    "standard_no": "SL/T 352 / GB/T 50082",
+    "grade_num": 8,
+    "note": "判定: 实测抗渗等级>=设计抗渗等级W8"
+  },
+  {
+    "category_key": "concrete_impermeability",
+    "spec": "W10",
+    "standard_no": "SL/T 352 / GB/T 50082",
+    "grade_num": 10,
+    "note": "判定: 实测抗渗等级>=设计抗渗等级W10"
+  },
+  {
+    "category_key": "concrete_impermeability",
+    "spec": "W12",
+    "standard_no": "SL/T 352 / GB/T 50082",
+    "grade_num": 12,
+    "note": "判定: 实测抗渗等级>=设计抗渗等级W12"
+  },
+  {
+    "category_key": "concrete_frost",
+    "spec": "F50",
+    "standard_no": "SL/T 352 / GB/T 50082",
+    "cycles_min": 50,
+    "note": "判定: 经50次冻融循环后相对动弹模>=60%且质量损失率<=5%"
+  },
+  {
+    "category_key": "concrete_frost",
+    "spec": "F100",
+    "standard_no": "SL/T 352 / GB/T 50082",
+    "cycles_min": 100,
+    "note": "判定: 经100次冻融循环后相对动弹模>=60%且质量损失率<=5%"
+  },
+  {
+    "category_key": "concrete_frost",
+    "spec": "F150",
+    "standard_no": "SL/T 352 / GB/T 50082",
+    "cycles_min": 150,
+    "note": "判定: 经150次冻融循环后相对动弹模>=60%且质量损失率<=5%"
+  },
+  {
+    "category_key": "concrete_frost",
+    "spec": "F200",
+    "standard_no": "SL/T 352 / GB/T 50082",
+    "cycles_min": 200,
+    "note": "判定: 经200次冻融循环后相对动弹模>=60%且质量损失率<=5%"
+  },
+  {
+    "category_key": "concrete_frost",
+    "spec": "F250",
+    "standard_no": "SL/T 352 / GB/T 50082",
+    "cycles_min": 250,
+    "note": "判定: 经250次冻融循环后相对动弹模>=60%且质量损失率<=5%"
+  },
+  {
+    "category_key": "concrete_frost",
+    "spec": "F300",
+    "standard_no": "SL/T 352 / GB/T 50082",
+    "cycles_min": 300,
+    "note": "判定: 经300次冻融循环后相对动弹模>=60%且质量损失率<=5%"
+  },
+  {
+    "category_key": "compaction_degree",
+    "spec": "88",
+    "standard_no": "SL 237 / JTG 3430 / SL 677",
+    "min_percent": 88,
+    "note": "判定: 实测压实度>=88%(设计压实度)"
+  },
+  {
+    "category_key": "compaction_degree",
+    "spec": "90",
+    "standard_no": "SL 237 / JTG 3430 / SL 677",
+    "min_percent": 90,
+    "note": "判定: 实测压实度>=90%(设计压实度)"
+  },
+  {
+    "category_key": "compaction_degree",
+    "spec": "92",
+    "standard_no": "SL 237 / JTG 3430 / SL 677",
+    "min_percent": 92,
+    "note": "判定: 实测压实度>=92%(设计压实度)"
+  },
+  {
+    "category_key": "compaction_degree",
+    "spec": "93",
+    "standard_no": "SL 237 / JTG 3430 / SL 677",
+    "min_percent": 93,
+    "note": "判定: 实测压实度>=93%(设计压实度)"
+  },
+  {
+    "category_key": "compaction_degree",
+    "spec": "95",
+    "standard_no": "SL 237 / JTG 3430 / SL 677",
+    "min_percent": 95,
+    "note": "判定: 实测压实度>=95%(设计压实度)"
+  },
+  {
+    "category_key": "compaction_degree",
+    "spec": "96",
+    "standard_no": "SL 237 / JTG 3430 / SL 677",
+    "min_percent": 96,
+    "note": "判定: 实测压实度>=96%(设计压实度)"
+  },
+  {
+    "category_key": "compaction_degree",
+    "spec": "98",
+    "standard_no": "SL 237 / JTG 3430 / SL 677",
+    "min_percent": 98,
+    "note": "判定: 实测压实度>=98%(设计压实度)"
+  },
+  {
+    "category_key": "compaction_degree",
+    "spec": "100",
+    "standard_no": "SL 237 / JTG 3430 / SL 677",
+    "min_percent": 100,
+    "note": "判定: 实测压实度>=100%(设计压实度)"
+  },
+  {
+    "category_key": "rebar_mech_joint",
+    "spec": "*",
+    "standard_no": "JGJ 107",
+    "tensile_min_factor": 1,
+    "note": "判定: 接头抗拉强度>=母材抗拉强度标准值(按牌号查 rebar_tensile 标准)"
+  },
+  {
+    "category_key": "prestress_strand",
+    "spec": "φs12.7",
+    "standard_no": "GB/T 5224",
+    "tensile_min": 1860,
+    "note": "常用1860MPa级钢绞线: 抗拉强度>=1860MPa, 最大力总延伸率>=3.5%, 应力松弛率符合GB/T 5224"
+  },
+  {
+    "category_key": "prestress_strand",
+    "spec": "φs15.2",
+    "standard_no": "GB/T 5224",
+    "tensile_min": 1860,
+    "note": "常用1860MPa级钢绞线: 抗拉强度>=1860MPa, 最大力总延伸率>=3.5%, 应力松弛率符合GB/T 5224"
+  },
+  {
+    "category_key": "prestress_strand",
+    "spec": "φs17.8",
+    "standard_no": "GB/T 5224",
+    "tensile_min": 1860,
+    "note": "常用1860MPa级钢绞线: 抗拉强度>=1860MPa, 最大力总延伸率>=3.5%, 应力松弛率符合GB/T 5224"
+  },
+  {
+    "category_key": "prestress_strand",
+    "spec": "φs21.6",
+    "standard_no": "GB/T 5224",
+    "tensile_min": 1860,
+    "note": "常用1860MPa级钢绞线: 抗拉强度>=1860MPa, 最大力总延伸率>=3.5%, 应力松弛率符合GB/T 5224"
+  },
+  {
+    "category_key": "pile_integrity",
+    "spec": "*",
+    "standard_no": "JGJ 106 / JTG/T 3512",
+    "pass_categories": [
+      "I",
+      "II"
+    ],
+    "note": "判定: 桩身完整性类别为Ⅰ类、Ⅱ类为合格"
+  },
+  {
+    "category_key": "cement_material",
+    "spec": "P.O 42.5",
+    "standard_no": "GB 175 / GB/T 17671",
+    "compressive_28d_min": 42.5,
+    "soundness_required": true,
+    "note": "依据GB 175。判定: 安定性合格, 28d抗压强度>=42.5MPa"
+  },
+  {
+    "category_key": "cement_material",
+    "spec": "P.O 52.5",
+    "standard_no": "GB 175 / GB/T 17671",
+    "compressive_28d_min": 52.5,
+    "soundness_required": true,
+    "note": "依据GB 175。判定: 安定性合格, 28d抗压强度>=52.5MPa"
+  },
+  {
+    "category_key": "cement_material",
+    "spec": "P.C 32.5",
+    "standard_no": "GB 175 / GB/T 17671",
+    "compressive_28d_min": 32.5,
+    "soundness_required": true,
+    "note": "依据GB 175。判定: 安定性合格, 28d抗压强度>=32.5MPa"
+  },
+  {
+    "category_key": "cement_material",
+    "spec": "P.S.A 32.5",
+    "standard_no": "GB 175 / GB/T 17671",
+    "compressive_28d_min": 32.5,
+    "soundness_required": true,
+    "note": "依据GB 175。判定: 安定性合格, 28d抗压强度>=32.5MPa"
+  },
+  {
+    "category_key": "cement_material",
+    "spec": "P.II 42.5",
+    "standard_no": "GB 175 / GB/T 17671",
+    "compressive_28d_min": 42.5,
+    "soundness_required": true,
+    "note": "依据GB 175。判定: 安定性合格, 28d抗压强度>=42.5MPa"
+  },
+  {
+    "category_key": "cement_material",
+    "spec": "P.II 52.5",
+    "standard_no": "GB 175 / GB/T 17671",
+    "compressive_28d_min": 52.5,
+    "soundness_required": true,
+    "note": "依据GB 175。判定: 安定性合格, 28d抗压强度>=52.5MPa"
+  }
+]
